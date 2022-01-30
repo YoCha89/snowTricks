@@ -1,0 +1,11 @@
+index:
+  path: /
+  controller: App\Controller\TestController::index
+
+rand:
+  path: /rand
+  controller: App\Controller\TestController::rand
+
+# login:
+#   path: /login
+#   controller: App\Controller\SecurityController::login
