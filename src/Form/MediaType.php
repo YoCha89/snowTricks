@@ -14,9 +14,6 @@ class MediaType extends AbstractType
         $builder
             ->add('title')
             ->add('media')
-            ->add('createdAt')
-            ->add('updatedAt')
-            ->add('trick')
         ;
     }
 

@@ -43,12 +43,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $secretQ;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $secretA;
+    private $profilePic;
 
     public function getId(): ?int
     {
@@ -151,26 +146,14 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSecretQ(): ?string
+    public function getProfilePic(): ?string
     {
-        return $this->secretQ;
+        return $this->profilePic;
     }
 
-    public function setSecretQ(?string $secretQ): self
+    public function setProfilePic(?string $profilePic): self
     {
-        $this->secretQ = $secretQ;
-
-        return $this;
-    }
-
-    public function getSecretA(): ?string
-    {
-        return $this->secretA;
-    }
-
-    public function setSecretA(?string $secretA): self
-    {
-        $this->secretA = $secretA;
+        $this->profilePic = $profilePic;
 
         return $this;
     }

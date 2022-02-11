@@ -14,13 +14,6 @@ class CommentType extends AbstractType
         $builder
             ->add('author')
             ->add('content')
-            ->add('datePublish')
-            ->add('validated')
-            ->add('createdAt')
-            ->add('updatedAt')
-            ->add('trick')
-            ->add('commentParent')
-            ->add('account')
         ;
     }
 

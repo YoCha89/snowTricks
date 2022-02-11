@@ -15,8 +15,6 @@ class TrickType extends AbstractType
             ->add('name')
             ->add('content')
             ->add('slug')
-            ->add('createdAt')
-            ->add('updatedAt')
         ;
     }
 
