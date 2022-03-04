@@ -25,7 +25,7 @@ class Media
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $media;
+    private $mediaPath;
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="medias")
@@ -59,14 +59,14 @@ class Media
         return $this;
     }
 
-    public function getMedia(): ?string
+    public function getMediaPath(): ?string
     {
-        return $this->media;
+        return $this->mediaPath;
     }
 
-    public function setMedia(?string $media): self
+    public function setMediaPath(?string $mediaPath): self
     {
-        $this->media = $media;
+        $this->mediaPath = $mediaPath;
 
         return $this;
     }

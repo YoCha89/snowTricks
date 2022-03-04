@@ -6,6 +6,7 @@ use App\Entity\Media;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class MediaType extends AbstractType
 {
@@ -13,7 +14,7 @@ class MediaType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('media')
+            ->add('mediaPath', FileType::class)
         ;
     }
 
