@@ -1,27 +1,15 @@
 
-{% block content %}
-<div class="col-md-12">
-    <div class="box box-primary">
-        <div class="box-header">
-            <h4 class="box-title">Création de compte</h4>
-        </div>
-        <div class="box-body">
-            {{ form_start(form) }}
-            <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
-                <section class="model" style="width: 50%;">
-                    {{ form_row(form.author) }}
-                </section>
-
-                <section class="capacity" style="width: 45%;">
+    <div class="box-body">
+        {{ form_start(form) }}
+        <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
+            <div class="form-group row">
                     {{ form_row(form.content) }}
-                </section>
             </div>
-
-            <div class="button">
-                <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i>Demander la publication</button>
-            </div>
-
-            {{ form_end(form) }}
         </div>
+
+        <div class="button">
+            <button type="submit" class="btn btn-primary">Demander la publication</button>
+        </div>
+
+        {{ form_end(form) }}
     </div>
-{% endblock %}

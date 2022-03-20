@@ -6,6 +6,7 @@ use App\Entity\Account;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class AccountType extends AbstractType
 {
@@ -13,11 +14,9 @@ class AccountType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('roles')
-            ->add('password')
             ->add('fullName')
-            ->add('secretQ')
-            ->add('secretA')
+            ->add('password')
+            ->add('profilePic', FileType::class)
         ;
     }
 

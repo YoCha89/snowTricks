@@ -70,6 +70,11 @@ class Comment
      */
     private $account;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $lvl;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -214,6 +219,18 @@ class Comment
     public function setAccount(?Account $account): self
     {
         $this->account = $account;
+
+        return $this;
+    }
+
+    public function getLvl(): ?int
+    {
+        return $this->lvl;
+    }
+
+    public function setLvl(?int $lvl): self
+    {
+        $this->lvl = $lvl;
 
         return $this;
     }

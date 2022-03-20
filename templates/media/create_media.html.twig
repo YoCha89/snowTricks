@@ -1,27 +1,17 @@
+{% extends 'base.html.twig' %}
 
-{% block content %}
+
+{% block title %}Ajouter un média{% endblock %}
+
+{% block body %}
+
 <div class="col-md-12">
     <div class="box box-primary">
         <div class="box-header">
-            <h4 class="box-title">Création de compte</h4>
+            <legend>Ajouter un média</legend>
         </div>
-        <div class="box-body">
-            {{ form_start(form) }}
-            <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
-                <section class="model" style="width: 50%;">
-                    {{ form_row(form.title) }}
-                </section>
 
-                <section class="capacity" style="width: 45%;">
-                    {{ form_row(form.content) }}
-                </section>
-            </div>
+        {{include('media/_media_form.html.twig')}}
 
-            <div class="button">
-                <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i>Demander la publication</button>
-            </div>
-
-            {{ form_end(form) }}
-        </div>
-    </div>
+   </div>
 {% endblock %}

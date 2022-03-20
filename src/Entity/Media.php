@@ -25,7 +25,7 @@ class Media
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $media;
+    private $mediaPath;
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="medias")
@@ -41,6 +41,11 @@ class Media
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type;
 
     public function getId(): ?int
     {
@@ -59,14 +64,14 @@ class Media
         return $this;
     }
 
-    public function getMedia(): ?string
+    public function getMediaPath(): ?string
     {
-        return $this->media;
+        return $this->mediaPath;
     }
 
-    public function setMedia(?string $media): self
+    public function setMediaPath(?string $mediaPath): self
     {
-        $this->media = $media;
+        $this->mediaPath = $mediaPath;
 
         return $this;
     }
@@ -103,6 +108,18 @@ class Media
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

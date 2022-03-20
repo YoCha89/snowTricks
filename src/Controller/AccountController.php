@@ -33,8 +33,25 @@ class AccountController extends AbstractController
         {
             $email = $form['email']->getData();
             $fullName = $form['fullName']->getData();
-            $secretQ = $form['secretQ']->getData();
-            $secretA = $form['secretA']->getData();
+            $pass = $form['password']->getData();
+            $profilePic = $form['profilePic']->getData();
+            dd($profilePic);
+            $check = $em->getRepository(Account::class)->findBy(array('email'=>$email));
+
+             if($check == null){
+                $account->setEmail($name);
+                $account->setFullName($content);
+                $account->setPass($pass);
+
+                
+                $em->persist($account);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('create_account')); 
+                
+            }else{
+                $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure ou <a href="{{ path(\'update_trick\') }}">mettez à jour la figure portant ce nom</a>.');
+            }
         }
 
         return $this->render('account/create_account.html.twig', [

@@ -1,23 +1,57 @@
 {% extends 'base.html.twig' %}
 
- {% block stylesheets %}
-           <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
-        {% endblock %}
+
 
 {% block body %}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/laragon/www/SnowTricks/src/Controller/TrickController.php'|file_link(0) }}">src/Controller/TrickController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/laragon/www/SnowTricks/templates/trick/index.html.twig'|file_link(0) }}">templates/trick/index.html.twig</a></code></li>
-    </ul>
-</div>
-<br/><br/>
 
 <a href="{{ path('create_account') }}">Créer votre compte</a>
 <a href="{{ path('create_trick') }}">Ajouter un trick</a>
+<a href="{{ path('manage_media') }}">Gérer les média</a>
+<a href="{{ path('create_category') }}">Créer une nouvelle catégorie</a></br> </br>
+
+
+<div id="damier">
+  {% for trick in tricks %}
+      <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 10px;">
+        <div class="card-body">
+          <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
+          <a href="{{ path('show_trick', {id:trick.id}) }}">
+            {% for media in trick.medias %} 
+
+              {% if media.type == 'imgP' %} 
+                <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}">
+              {% endif %} 
+
+            {% endfor %}
+          </a>
+        </div>
+      </div>
+  {% endfor %}
+
+  {% for trick in tricks %}
+      <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 10px;">
+        <div class="card-body">
+          <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
+            <div class = "adminActions">
+              <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+              <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+            </div>
+          <a href="{{ path('show_trick', {id:trick.id}) }}">
+            {% for media in trick.medias %} 
+
+              {% if media.type == 'imgP' %} 
+                <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}">
+              {% endif %} 
+
+            {% endfor %}
+          </a>
+        </div>
+      </div>
+  {% endfor %}
+
+
+</div>
+
 
 {% endblock %}

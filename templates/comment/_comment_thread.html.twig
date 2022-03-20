@@ -1,0 +1,33 @@
+  
+  {% set marginIndex = comment.lvl - 1 %}
+  {% set margin = marginIndex * 30 %}
+
+  <div class="list-group-item list-group-item-action flex-column align-items-start" style="border-radius: 0 0 3px 3px; margin-left: {{margin}}px; ">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ comment.account.fullName }}</h5>
+      <small class="text-muted">{{ comment.createdAt|date("d/m/Y") }}</small>
+    </div>
+    <p class="mb-1">{{ comment.content }}</p>
+
+    <form action="{{ path('show_trick', {id:trick.id}) }}">
+        <input type="hidden" name="commentParent" value="{{ comment.id }}">
+        <div class="button">
+          <button type="submit" class="btn btn-primary">Répondre</button>
+        </div>
+    </form> 
+  </div>
+
+   
+  {#{% if comment.account.id == app.user.id %}#}
+    <div class = "UserActions">
+      <a href="{{ path('update_comment', {id:comment.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+      <a href="{{ path('delete_comment', {id:comment.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+    </div>
+  {#{% endif %}#}
+
+
+  {% if comment.comments != null %}
+    {% for comment in comment.comments %}
+      {% include 'comment/_comment_thread.html.twig' with {'comment': comment} %}
+    {% endfor %} 
+  {% endif %}
