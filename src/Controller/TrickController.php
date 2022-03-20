@@ -3,11 +3,21 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\TrickType;
+use App\Form\ThumbnailType;
+use App\Form\CommentType;
 use App\Entity\Trick;
-use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Thumb;
+use App\Entity\Thumbnail;
+use App\Entity\Comment;
+use App\Entity\Account;
+use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TrickController extends AbstractController
 {
@@ -19,29 +29,12 @@ class TrickController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $tricks = $em->getRepository(Trick::class)->findAll();
 
-        $snowTricks = [];
+        $title = 'Bienvenue sur SnowTricks';
 
-        foreach($tricks as $trick){
-            $snowTrick = [];
-            $snowTrick[0] = $trick->getName();
-            $snowTrick[1] = $trick->getId();
-            $medias = $trick->getMedias();
-
-            foreach($medias as $img){
-                $snowTrick[2] = $img->getMediaPath();
-
-                if(preg_match('/^C:/', $snowTrick[2])){
-                    break;
-                }
-
-            }
-
-            array_push($snowTricks, $snowTrick);
-        }
-        
         return $this->render('trick/index.html.twig', [
             'controller_name' => 'TrickController',
-            'tricks'=>$snowTricks
+            'tricks'=>$tricks,
+            'title' => $title
         ]);
     }
 
@@ -53,8 +46,7 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
             $name = $form['name']->getData();
@@ -91,20 +83,97 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/update_trick", name="update_trick")
+     * @Route("/define_thumbnail/{id}", name="define_thumbnail")
      */
-    public function updateTrickAction(Request $request): Response {
+    public function defineThumbnailAction(Request $request, Trick $trick): Response {
 
-        $em = $this->getDoctrine()->getManager();
+        $mediasRaw = $trick->getMedias();
+        $medias = [];
 
-        $trick = $em->getRepository(Trick::class)->findOneBy(array('id'=>$request->get('id')));
+        $mediaP = null;
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $thumbnail = new Thumbnail();
+
+        $i = 0;
+        foreach($mediasRaw as $media){
+            if($media->getType() == 'imgP'){
+               $mediaP = $media;
+            }elseif($media->getType() == 'img'){
+                $thumb = new thumb();
+                $thumb->setName($media->getTitle());
+                $thumb->setChoice(false);
+
+                $thumbnail->addThumb( $thumb);
+
+                array_push($medias, $media);
+            }
+        }
+
+        $form = $this->createForm(ThumbnailType::class, $thumbnail);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
 
+            $choiceraw = $form['thumbs']->getData();
+            $choice=[];
+
+            foreach($choiceraw as $cho){
+                if($cho->getChoice() == true){
+                    array_push($choice, $cho->getName());
+                }
+            }
+
+            $check = count($choice);
+
+            if($check == 0){
+                $this->addFlash('error', 'Veuillez sélectionner une image pour définir le thumbnail.');
+            }elseif($check > 1){
+                $this->addFlash('error', 'Vous ne pouvez définir plusieurs images en tant que thumbnail de la figure. Veuillez n\'en sélectionner qu\'une.');
+            }else{
+                $newImgP = $em->getRepository(Media::class)->findOneBy(array('title'=>$choice[0]));
+                $old = $trick->getMedias();
+                foreach($old as $tmp){
+                    if($tmp->getType() == 'imgP'){
+                        $oldImgP = $tmp;
+                    }
+                }
+                $oldImg->setType('img');
+                $newImgP->setType('imgP');
+
+                $em->persist($oldImg);
+                $em->persist($newImgP);
+
+                $em->flush();
+
+                $this->addFlash('error', 'Vous ne pouvez définir plusieurs images en tant que thumbnail de la figure. Veuillez n\'en sélectionner qu\'une.');
+            }
         }
+
+        return $this->render('trick/define_thumbnail.html.twig', [
+            'form' => $form->createView(),
+            'trick' => $trick,
+            'medias' => $medias,
+            'mediaP' => $mediaP,
+        ]);
+    }
+
+    /**
+     * @Route("/update_trick/{id}", name="update_trick")
+     */
+    public function updateTrickAction(Request $request, Trick $trick): Response {
+
+        $form = $this->createForm(TrickType::class, $trick);
+        $form->handleRequest($request);
+/*$type = $form['type']->getData();
+            if(preg_match('/.jpg$/', $mediaPath) || preg_match('/.png$/', $mediaPath) ){
+                $type = 'im';
+            }elseif(preg_match('/^https/', $mediaPath)){
+                $type = 'vid';
+            }
+            $media->setType($type);
+        if ($form->isSubmitted() && $form->isValid()){
+
+        }*/
 
         return $this->render('trick/update_trick.html.twig', [
             'form' => $form->createView(),
@@ -113,17 +182,56 @@ class TrickController extends AbstractController
     }
 
        /**
-     * @Route("/show_trick", name="show_trick")
+     * @Route("/show_trick/{id}", name="show_trick")
      */
-    public function showTrickAction(Request $request): Response{
+    public function showTrickAction(Request $request, Trick $trick): Response{
+
+        $em = $this->getDoctrine()->getManager();
+
+        $comment = new Comment();
+        
+        $comment->setTrick($trick);
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $comment = $form->getData();
+            // $author = $this->getSession
+            $author = $em->getRepository(account::class)->findOneBy(array('id'=> 1));
+            // $createdAt = new DateTime('now');
+
+            $comment->setAuthor($author);
+            $comment->setCreatedAt(new \DateTime());
+
+            $em->persist($comment);
+            $em->flush();
+
+            // unset($comment->getContent());
+            return $this->redirectToRoute('show_trick', ['id' => $trick->getId()]);
+        }
+
+        // $comments = $this->prepareComments($trick->getComments());
+        $comments = $trick->getComments();
+        $title = $trick->getName();
+
         return $this->render('trick/show_trick.html.twig', [
+            'trick' => $trick,
+            'form' => $form->createView(),
+            'title' => $title,
+            'comments' => $comments
         ]);
     }
-
+    
        /**
-     * @Route("/delete_trick", name="delete_trick")
+     * @Route("/delete_trick/{id}", name="delete_trick")
      */
-    public function deleteTrickAction(Request $request): Response{
-        return $this->redirect($this->generateUrl('/')); 
+    public function deleteTrickAction(Request $request, Trick $trick): Response{
+        $id = $trick->getId();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($trick);
+        $em->flush();
+        return $this->redirectToRoute('show_trick', ['id' => $id]); 
     }
 }

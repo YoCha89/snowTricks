@@ -12,33 +12,25 @@ use App\Entity\Comment;
 
 class CommentController extends AbstractController
 {
+
     /**
-     * @Route("/comment", name="comment")
+     * @Route("/update_comment/{id}", name="update_comment")
      */
-    public function index(): Response
+    public function updateCommentAction(Request $request, Comment $comment): Response
     {
-        return $this->render('comment/index.html.twig', [
-            'controller_name' => 'CommentController',
-        ]);
+       return $this->redirectToRoute('/');
     }
 
     /**
-     * @Route("/create_comment", name="create_comment")
+     * @Route("/delete_comment/{id}", name="delete_comment")
      */
-    public function createCommentAction(Request $request): Response {
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            $name = $form['name']->getData();
-            $content = $form['content']->getData();
-        }
-
-        return $this->render('comment/create_comment.html.twig', [
-            'form' => $form->createView(),
-            'comment' => $comment
-        ]);
+    public function deleteCommentAction(Request $request, Comment $comment): Response
+    {   
+        $id = $comment->getTrick()->getId();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($comment);
+        $em->flush();
+        return $this->redirectToRoute('show_trick', ['id' => $id]);
     }
+
 }

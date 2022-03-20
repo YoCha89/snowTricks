@@ -7,13 +7,20 @@
 
   <div class="list-group">
     <div class="list-group-item list-group-item-action flex-column align-items-start active">
-
+    <h1>{{trick.name}}</h1>
     <div class="imgCarouss">
-      <div class="imgprinc"></div>
+      <div class="imgprinc">
+
+      </div>
         <ul class="pagination pagination-lg">
           <li class="page-item disabled">
             <a class="page-link" href="#">&laquo;</a>
           </li>
+          {% for img in trick.medias %} 
+            <li class="page-item active">
+              <a class="page-link" href="#"><img src="{{ asset(img.mediaPath) }}"></a>
+            </li>
+          {% endfor %}
           <li class="page-item active">
             <a class="page-link" href="#">1</a>
           </li>
@@ -37,30 +44,17 @@
 
       <div class="d-flex w-100 justify-content-between">
         <h3>Description</h3>
-        <p>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <p> {{trick.content}} </p>
       </div>
-      <h3>Conseils</h3>
-      <p>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
     </div>
 
     <div class="form-group">
-      <form>
-        <label for="exampleTextarea" class="form-label mt-4" style="margin: 4px">Commentaire</label>
-        <textarea class="form-control" id="commentaire" rows="3" style="max-width: 98%; margin: auto;"></textarea>
-        <button type="submit" class="btn btn-primary" style="margin: 8px">Publier</button>
-      </form>
+      {% include 'comment/_comment_form.html.twig' with {'form': form} %}
     </div>
 
-    <div class="list-group-item list-group-item-action flex-column align-items-start" style="border-radius: 0 0 3px 3px ">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">List group item heading</h5>
-        <small class="text-muted">3 days ago</small>
-      </div>
-      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      <small class="text-muted">Donec id elit non mi porta.</small>
-    </div>
+    {% for comment in comments %}
+      {% include 'comment/_comment_thread.html.twig' with {'comment': comment} %}
+    {% endfor %} 
 
   </div>
-
-
 {% endblock %}

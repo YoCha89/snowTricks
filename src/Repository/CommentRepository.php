@@ -18,22 +18,27 @@ class CommentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Comment::class);
     }
+   
+    public function prepareComment($trick) {
 
+        $query = $this->_em->createQuery('
+            SELECT cChild, cPar
+            FROM App\Entity\Comment cPar
+            FROM App\Entity\Comment cChild
+            WHERE cChild.commentParent BETWEEN cPar.commentParent AND cPar.comments
+            AND cPar.trick = ?1
+            ORDER BY cChild.commentParent
+         ');
+
+        $query->setParameters(array('1' => $trick->getId()));
+
+        return $query->getResult();
+    }
     // /**
     //  * @return Comment[] Returns an array of Comment objects
     //  */
     /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
+
     */
 
     /*

@@ -7,16 +7,19 @@
                 {{ form_row(form.title) }}
             </section>
         </div>
-
+    {% if update is not defined %} 
         <div class="form-group row">
             <section class="capacity" style="width: 45%;">
                 {{ form_row(form.mediaPath) }}
             </section>
         </div>
+    {% else %}
+        <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}">
+    {% endif %}
     </div>
 
     <div class="button">
-        <button type="submit" class="btn btn-primary">Demander la publication</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
     </div>
 
     {{ form_end(form) }}

@@ -1,7 +1,7 @@
 
 <div class="box-body">
     {{ form_start(form) }}
-    <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
+    <div class="part mb-2" style="display: flex; flex-direction:column; justify-content: space-between; align-item:center; margin-bottom: 2em;">
         <section class="model" style="width: 50%;">
             {{ form_row(form.name) }}
         </section>
@@ -11,13 +11,16 @@
         </section>
 
         <section class="capacity" style="width: 45%;">
-            {{ form_row(form.media.title) }}
+            {{ form_row(form.medias) }}
+        </section>
+
+        <section class="capacity" style="width: 45%;">
+            {{ form_row(form.category) }}
         </section>
     </div>
 
     <div class="button">
         <button type="submit" class="btn btn-primary"> <i class="fa fa-save"></i>Ajouter la figure</button>
     </div>
-
     {{ form_end(form) }}
 </div>

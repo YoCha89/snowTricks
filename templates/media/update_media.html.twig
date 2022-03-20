@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Modifier un média{% endblock %}
+
+{% block body %}
+
+<div class="col-md-12">
+    <div class="box box-primary">
+        <div class="box-header">
+            <legend>Modifier un média</legend>
+        </div>
+        {% if imgp is not null %}
+            {% if imgp != true %}
+                <p>Cette image est liée à la figure {{media.trick.name}} qui comporte comme image "thumbnail" : {{imgp}} </p>
+            {% else %}
+                <p>Cette image est liée en tant que thumbnail de la figure {{media.trick.name}}</p>
+            {% endif %}
+        {% endif %}
+        {{include('media/_media_form.html.twig')}}
+
+   </div>
+{% endblock %}
