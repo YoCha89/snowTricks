@@ -3,8 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Trick;
-use App\Entity\media;
-use App\Entity\Category;
+use App\Entity\media;use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
