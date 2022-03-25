@@ -12,44 +12,59 @@
 
 
 <div id="damier">
-  {% for trick in tricks %}
-      <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 10px;">
-        <div class="card-body">
-          <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
-          <a href="{{ path('show_trick', {id:trick.id}) }}">
-            {% for media in trick.medias %} 
+  <div class="thumbnails">
+    {% for trick in tricks %}
+        <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 2px;">
+          <div class="card-body">
+            
+            <a href="{{ path('show_trick', {id:trick.id}) }}">
+              {% for media in trick.medias %} 
 
-              {% if media.type == 'imgP' %} 
-                <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}">
-              {% endif %} 
+                {% if media.type == 'imgP' %} 
+                  <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}" style="max-width: 190px;">
+                {% endif %} 
 
-            {% endfor %}
-          </a>
-        </div>
-      </div>
-  {% endfor %}
+              {% endfor %}
+            </a>
 
-  {% for trick in tricks %}
-      <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 10px;">
-        <div class="card-body">
-          <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
-            <div class = "adminActions">
-              <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
-              <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+            <div class="cardDetail">
+              <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
+                <div class = "adminActions">
+                  <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+                  <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+                </div>
             </div>
-          <a href="{{ path('show_trick', {id:trick.id}) }}">
-            {% for media in trick.medias %} 
-
-              {% if media.type == 'imgP' %} 
-                <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}">
-              {% endif %} 
-
-            {% endfor %}
-          </a>
+          </div>
         </div>
-      </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
 
+  <div class="thumbnails">
+    {% for trick in tricks %}
+        <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 2px;">
+          <div class="card-body">
+            <a href="{{ path('show_trick', {id:trick.id}) }}">
+              {% for media in trick.medias %} 
+
+                {% if media.type == 'imgP' %} 
+                  <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}" style ="max-width: 190px;">
+                {% endif %} 
+
+              {% endfor %}
+            </a>
+
+            <div class="cardDetail">
+              <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
+                <div class = "adminActions">
+                  <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+                  <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+                </div>
+            </div>
+
+          </div>
+        </div>
+    {% endfor %}
+  </div>
 
 </div>
 

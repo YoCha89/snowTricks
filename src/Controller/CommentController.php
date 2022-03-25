@@ -32,5 +32,4 @@ class CommentController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('show_trick', ['id' => $id]);
     }
-
 }

@@ -27,7 +27,7 @@ class TrickController extends AbstractController
     public function index(): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $tricks = $em->getRepository(Trick::class)->findAll();
+        $tricks = $em->getRepository(Trick::class)->findByOrder();
 
         $title = 'Bienvenue sur SnowTricks';
 
@@ -181,7 +181,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-       /**
+    /**
      * @Route("/show_trick/{id}", name="show_trick")
      */
     public function showTrickAction(Request $request, Trick $trick): Response{
@@ -191,28 +191,60 @@ class TrickController extends AbstractController
         $comment = new Comment();
         
         $comment->setTrick($trick);
+        $comment->setLvl(1);
+        
+        $parent = $request->get('commentParent');
+        $reply = false;
+
+        if($parent != null){
+            $commentParent = $em->getRepository(Comment::class)->findOneBy(array('id'=>$parent));
+            $lvl = $commentParent->getLvl() + 1;
+            $comment->setCommentParent($commentParent);
+            $comment->setLvl($lvl);
+            $reply = true;
+        }
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $comment = $form->getData();
-            // $author = $this->getSession
             $author = $em->getRepository(account::class)->findOneBy(array('id'=> 1));
-            // $createdAt = new DateTime('now');
 
-            $comment->setAuthor($author);
+            $comment->setAccount($author);
             $comment->setCreatedAt(new \DateTime());
 
             $em->persist($comment);
             $em->flush();
 
-            // unset($comment->getContent());
-            return $this->redirectToRoute('show_trick', ['id' => $trick->getId()]);
+            return $this->redirectToRoute('show_trick', ['id' => $trick->getId()]); 
         }
 
-        // $comments = $this->prepareComments($trick->getComments());
+        if($reply == false){
+            $comments = $em->getRepository(Comment::class)->findByOrder($trick->getId());
+            $title = $trick->getName();
+
+            return $this->render('trick/show_trick.html.twig', [
+                'trick' => $trick,
+                'form' => $form->createView(),
+                'title' => $title,
+                'comments' => $comments
+            ]);  
+        }else{
+            $title = 'Réponse à '. $commentParent->getAccount()->getFullName();
+
+            return $this->render('comment/reply_comment.html.twig', [
+                'trick' => $trick,
+                'commentParent' => $commentParent,
+                'form' => $form->createView(),
+                'title' => $title,
+            ]);  
+        }
+    }
+    
+/*    protected function replyComment($comment, $commentParent){
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
         $comments = $trick->getComments();
         $title = $trick->getName();
 
@@ -221,9 +253,9 @@ class TrickController extends AbstractController
             'form' => $form->createView(),
             'title' => $title,
             'comments' => $comments
-        ]);
-    }
-    
+        ]);                   
+    }*/
+
        /**
      * @Route("/delete_trick/{id}", name="delete_trick")
      */
