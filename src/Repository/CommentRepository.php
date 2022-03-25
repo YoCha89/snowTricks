@@ -19,7 +19,7 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
    
-    public function prepareComment($trick) {
+/*    public function prepareComment($trick) {
 
         $query = $this->_em->createQuery('
             SELECT cChild, cPar
@@ -33,7 +33,20 @@ class CommentRepository extends ServiceEntityRepository
         $query->setParameters(array('1' => $trick->getId()));
 
         return $query->getResult();
-    }
+    }*/
+
+    public function findByOrder($id)
+        {
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.trick = :trick')
+                ->andWhere('c.lvl = :lvl')
+                ->setParameter('trick', $id)
+                ->setParameter('lvl', 1)
+                ->orderBy('c.createdAt', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
     // /**
     //  * @return Comment[] Returns an array of Comment objects
     //  */

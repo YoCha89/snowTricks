@@ -7,35 +7,30 @@
 
   <div class="list-group">
     <div class="list-group-item list-group-item-action flex-column align-items-start active">
-    <h1>{{trick.name}}</h1>
-    <div class="imgCarouss">
-      <div class="imgprinc">
-
+            <div class = "adminActions" style="text-align: right; margin:2%;">
+              <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+              <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+            </div>
+      <div class="trickTitle" style="text-align: center; margin: 7%; font-weight: bold; color : #18bc9c;">
+        <h1>{{trick.name}}</h1>
       </div>
+      <div class="imgCarouss">
+        <div class="imgprinc">
+          {% for img in trick.medias %} 
+            {% if img.type == 'imgP' %}
+              <img src="{{ asset(img.mediaPath) }}">
+            {% endif %}
+          {% endfor %}
+        </div>
         <ul class="pagination pagination-lg">
           <li class="page-item disabled">
             <a class="page-link" href="#">&laquo;</a>
           </li>
           {% for img in trick.medias %} 
             <li class="page-item active">
-              <a class="page-link" href="#"><img src="{{ asset(img.mediaPath) }}"></a>
+              <a class="page-link" href="#"><img src="{{ asset(img.mediaPath) }}" style = "max-width: 150px;"></a>
             </li>
           {% endfor %}
-          <li class="page-item active">
-            <a class="page-link" href="#">1</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">2</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">3</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">4</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">5</a>
-          </li>
           <li class="page-item">
             <a class="page-link" href="#">&raquo;</a>
           </li>
@@ -46,6 +41,11 @@
         <h3>Description</h3>
         <p> {{trick.content}} </p>
       </div>
+      <div class="specification">
+        {{ trick.category }}
+        {{ trick.createdAt }}
+        {{ trick.updatedAt }}
+      </div>
     </div>
 
     <div class="form-group">
@@ -53,8 +53,9 @@
     </div>
 
     {% for comment in comments %}
+<div class="thread">
       {% include 'comment/_comment_thread.html.twig' with {'comment': comment} %}
+</div>
     {% endfor %} 
-
   </div>
 {% endblock %}
