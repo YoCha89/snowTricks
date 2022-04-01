@@ -24,7 +24,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
         $tricks = $em->getRepository(Trick::class)->findByOrder();
@@ -223,21 +223,25 @@ class TrickController extends AbstractController
         if($reply == false){
             $comments = $em->getRepository(Comment::class)->findByOrder($trick->getId());
             $title = $trick->getName();
+            $anonymous = 'images/User.png';
 
             return $this->render('trick/show_trick.html.twig', [
                 'trick' => $trick,
                 'form' => $form->createView(),
                 'title' => $title,
-                'comments' => $comments
+                'comments' => $comments,
+                'anonymous' => $anonymous,
             ]);  
         }else{
             $title = 'Réponse à '. $commentParent->getAccount()->getFullName();
+            $anonymous = 'images/User.png';
 
             return $this->render('comment/reply_comment.html.twig', [
                 'trick' => $trick,
                 'commentParent' => $commentParent,
                 'form' => $form->createView(),
                 'title' => $title,
+                'anonymous' => $anonymous,
             ]);  
         }
     }
