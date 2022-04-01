@@ -12,13 +12,22 @@ use App\Entity\Account;
 class AccountController extends AbstractController
 {
     /**
-     * @Route("/account", name="account")
+     * @Route("/tmp", name="tmp")
      */
-    public function index(): Response
+    public function tmp(): Response
     {
-        return $this->render('account/index.html.twig', [
-            'controller_name' => 'AccountController',
-        ]);
+        $pass = '1234';
+        $password = password_hash($pass, PASSWORD_DEFAULT);
+        
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(Account::class)->findOneBy(array('email'=>'ychardel@gmail.com'));
+
+        $user->setPassword($password);
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('create_trick')); 
     }
 
     /**

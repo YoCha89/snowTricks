@@ -6959,3 +6959,41 @@ footer{
   padding-bottom: 50px;
   padding-left: 10px;
 }
+
+#logForm{
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+}
+
+#userMail{
+  text-align: center;
+  color: #18bc9c;
+  text-decoration: underline;
+  margin-left : 40px;
+}
+
+.commentWrap{
+  display: flex;
+  flex-direction: row;
+}
+
+.user-picture{
+  border-radius: 50%;
+  max-height: 80%;
+  margin-right: 6px;
+}
+
+.user-nav-picture{
+  border-radius: 50%;
+  max-height: 50%;
+}
+
+#navRight{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

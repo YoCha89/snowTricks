@@ -14,40 +14,67 @@
     </head>
 
     <header>
-        
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
           <div class="container-fluid" >
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <div class="navCorr" style="display: flex; justify-content: space-between; padding: 20px; align-items: center;">
-                <a class="navbar-brand" href="{{ path('index') }}">Snow Tricks</a>
-                    <div class="navOption">
-                      <ul class="navbar-nav me-auto" style="list-style-type: none;">
-                        <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
-                          <a class="nav-link active" href="#">Liste des figures
-                          </a>
-                        </li>
-                        <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
-                          <a class="nav-link" href="#">Mon compte</a>
-                        </li>
-                        <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
-                          <a class="nav-link" href="#">Mes commentaires</a>
-                        </li>
-                        <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
-                          <a class="nav-link" href="#">A propos</a>
-                        </li>
+                    
+                    <a class="navbar-brand" href="{{ path('index') }}">Snow Tricks</a>
+                    
+                    <div id="navRight">
+
+                        {% if app.user is not null %}
+                            {% if app.user.profilePic is not null %} 
+                              <img class="user-nav-picture" src="{{ asset(app.user.profilePic) }}" alt="" style ="max-width: 80px;">
+                            {% else %} 
+                              <img class="user-nav-picture" src="{{ asset(anonymous) }}" alt="anonymousIcone" style ="max-width: 80px;">
+                            {% endif %}                        
+                        {% endif %}
+                        
+                        <div class="navOption">
+                          <ul class="navbar-nav me-auto" style="list-style-type: none;">
+                            <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                              <a class="nav-link active" href="{{ path('index') }}">Tricks
+                              </a>
+                            </li>
+                            <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                                <div style="color :#18bc9c">|</div>
+                            </li>
 
 
-                      </ul>
+                            {% if app.user is not null %}
+                                <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                                  <a class="nav-link" href="{{ path('logout') }}">Sign out</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                                  <a class="nav-link" href="{{ path('login') }}">Sign in</a>
+                                </li>
+                                <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                                    <div style="color :#18bc9c">|</div>
+                                </li>
+                                <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                                  <a class="nav-link" href="{{ path('create_account') }}">Sign up</a>
+                                </li>
+
+                            {% endif %}
+      <!--                       <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                              <a class="nav-link" href="#">Mon compte</a>
+                            </li>
+                            <li class="nav-item" style="padding-right: 5px; padding-left: 5px; font-size: 17px; ">
+                                <div style="color :#18bc9c">|</div>
+                            </li> -->
+                          </ul>
+
+                            {% if app.user is not null %}
+                                <div id="userMail">
+                                    {{ app.user.email }}
+                                </div>
+
+                            {% endif %}
+                        </div>
                     </div>
-
-                    <form class="d-flex" style="display: flex; padding-bottom: 5px; width: 50%;">
-                        <input class="form-control me-sm-2" type="text" placeholder="Search" style="">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit" style="margin-left: 5px; color: #2c3e50;";>Rechercher</button>
-                    </form>
-
-                    <div class = "blocUser">
-                    </div> 
 
                 </div>
             </div>

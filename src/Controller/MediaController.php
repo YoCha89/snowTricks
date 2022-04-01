@@ -54,7 +54,7 @@ class MediaController extends AbstractController
             $mediaCheck = $em->getRepository(Media::class)->findOneBy(array('title' => $title));
 
             if($mediaCheck == null){
-                $directory = __DIR__.'/../../public/images';
+                $directory = 'images\profile_pic';
                 $path = $directory.'/'.$title;
                 $file = $form['mediaPath']->getData();
                 $file->move($directory, $title);

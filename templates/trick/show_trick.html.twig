@@ -7,10 +7,14 @@
 
   <div class="list-group">
     <div class="list-group-item list-group-item-action flex-column align-items-start active">
-            <div class = "adminActions" style="text-align: right; margin:2%;">
-              <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
-              <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
-            </div>
+      {% if app.user is not null %}
+        {% if is_granted('ROLE_ADMIN') %}
+          <div class = "adminActions" style="text-align: right; margin:2%;">
+            <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+            <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+          </div>
+        {% endif %}
+      {% endif %}
       <div class="trickTitle" style="text-align: center; margin: 7%; font-weight: bold; color : #18bc9c;">
         <h1>{{trick.name}}</h1>
       </div>
@@ -54,7 +58,7 @@
 
     {% for comment in comments %}
 <div class="thread">
-      {% include 'comment/_comment_thread.html.twig' with {'comment': comment} %}
+      {% include 'comment/_comment_thread.html.twig' with {'comment': comment, 'anonymous' : anonymous} %}
 </div>
     {% endfor %} 
   </div>

@@ -21,7 +21,7 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
     {
         parent::__construct($registry, Account::class);
     }
-
+ 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
