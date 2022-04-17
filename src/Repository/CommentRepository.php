@@ -42,7 +42,7 @@ class CommentRepository extends ServiceEntityRepository
                 ->andWhere('c.lvl = :lvl')
                 ->setParameter('trick', $id)
                 ->setParameter('lvl', 1)
-                ->orderBy('c.createdAt', 'ASC')
+                ->orderBy('c.createdAt', 'DESC')
                 ->getQuery()
                 ->getResult()
             ;

@@ -1,5 +1,6 @@
 
 <div class="box-body">
+    <div class="appForm">
     {{ form_start(form) }}
     <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
         <div class="form-group row">
@@ -14,7 +15,7 @@
             </section>
         </div>
     {% else %}
-        <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}">
+        <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 140px;">
     {% endif %}
     </div>
 
@@ -23,4 +24,5 @@
     </div>
 
     {{ form_end(form) }}
+    </div>
 </div>

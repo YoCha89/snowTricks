@@ -3,29 +3,55 @@
 
 
 {% block body %}
+<div id="accroche">
+  <div id="arrowFull" style="text-align:right"><a href="#damier"><img class="trick-picture" src="{{ asset('images/arrowDown.png') }}" alt="icone site" style ="max-width: 5%;"></a></div>
 
+  <div class="respAcc">
+    <div id="respAccFull">
+      <img class="trick-picture" src="{{ asset('images/snowtricks_icone.png') }}" alt="icone site" style ="max-width: 35%;">
+      <h1 style="color: #18bc9c;">BIENVENU SUR SNOWTRICKS !</h1>
+    </div>
+    <div id="respAccSmart">
+      <img class="trick-picture" src="{{ asset('images/snowtricks_icone.png') }}" alt="icone site" style ="max-width: 35%;">
+      <h1 style="color: #18bc9c;">SNOWTRICKS</h1>
+    </div>
+  </div>
 
-<a href="{{ path('create_account') }}">Créer votre compte</a>
-<a href="{{ path('create_trick') }}">Ajouter un trick</a>
-<a href="{{ path('manage_media') }}">Gérer les média</a>
-<a href="{{ path('create_category') }}">Créer une nouvelle catégorie</a></br> </br>
-
+  <div id="arrowSmart" style="text-align:right"><a href="#damier"><img class="trick-picture" src="{{ asset('images/arrowDown.png') }}" alt="icone site" style ="max-width: 15%;"></a></div>
+</div>
+<hr style="color: #18bc9c; border:solid;">
+  {% if app.user is not null %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="adminChoices">
+      <a href="{{ path('create_trick') }}">Ajouter un trick</a><div style="color :#18bc9c; margin-left:3px; margin-right:3px;">|</div>
+      <a href="{{ path('manage_media') }}">Gérer les média</a><div style="color :#18bc9c; margin-left:3px; margin-right:3px;">|</div>
+      <a href="{{ path('create_category') }}">Créer une nouvelle catégorie</a>
+    </div></br></br>
+    {% endif %}
+  {% endif %}
 
 <div id="damier">
-  <div class="thumbnails">
     {% for trick in tricks %}
+  <div class="thumbnails">
         <div class="card text-white bg-primary mb-3" style="max-width: 30rem; padding: 6px; margin: 2px;">
           <div class="card-body">
             <a href="{{ path('show_trick', {id:trick.id}) }}">
-              {% for media in trick.medias %} 
+              {% if trick.medias[0] is defined %}
+                {% for media in trick.medias %} 
 
-                {% if media.type == 'imgP' %} 
-                  <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}" style ="max-width: 190px;">
-                {% endif %} 
+                  {% if media.type == 'imgP' %} 
+                    <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{trick.name}}" style ="max-width: 190px;">
+                  {% endif %} 
 
-              {% endfor %}
+                {% endfor %}
+              {% else %}
+                 <img class="trick-picture" src="{{ asset('images/no_image.png') }}" alt="" style ="max-width: 140px;">
+              {% endif %}
+
             </a>
-
+              <div class="smartSeparatorInTrick">
+                  <hr style="color: #18bc9c; border:solid 0.2px;">
+              </div>
             <div class="cardDetail">
               <a href="{{ path('show_trick', {id:trick.id}) }}"><h4 class="card-title">{{trick.name}}</h4></a>
               {% if app.user is not null %}
@@ -40,10 +66,40 @@
 
           </div>
         </div>
-    {% endfor %}
   </div>
-
+    <div class="smartSeparator">
+        <hr style="color: #18bc9c; border:solid 2px;">
+    </div>
+    {% endfor %}
 </div>
 
+<div class="pagination">
+  {% if page != 1 %} 
+    <div class="turn">
+      <form method="post" action="{{ path('index', {'page': page}) }}">
+        <input id="page" name="page" type="hidden" value=" {{page}} ">
+        <input id="turn" name="turn" type="hidden" value="previous">
+        <button class="btn_page" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/previous.png') }}" alt="previous" style ="max-width: 45px;"></button>
+      </form>
+    </div>
+  {% endif %}
+
+  <div id="currPage">
+    {{page}}/{{totalPage}}
+  </div>
+
+  {% if page != totalPage %} 
+    <div class="turn">  
+      <form method="post" action="{{ path('index', {'page': page}) }}">
+        <input id="page" name="page" type="hidden" value=" {{page}} ">
+        <input id="turn" name="turn" type="hidden" value="next">
+        <button class="btn_page" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/next.png') }}" alt="next" style ="max-width: 45px;"></button>
+      </form>
+    </div>
+  {% endif %}
+</div>
+
+<div id="arrowFullsmart" style="text-align:right"><a href="#damier"><img class="trick-picture" src="{{ asset('images/arrowDown.png') }}" alt="icone site" style ="max-width: 5%;"></a></div>
+<div  id="arrowsmart" class="" style="text-align:right; margin-top:2%"><a href="#damier"><img class="trick-picture" src="{{ asset('images/arrowUp.png') }}" alt="icone site" style ="max-width: 15%;"></a></div>
 
 {% endblock %}

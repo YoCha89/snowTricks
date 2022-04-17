@@ -139,4 +139,19 @@ class MediaController extends AbstractController
         return new RedirectResponse('/manage_media');
 
     }
+
+
+    /**
+        * @Route("/display_media/{id}", name="display_media")
+        */
+    public function displayMediaAction(Request $request, Media $media): Response {
+
+        $title = $media->getTitle();
+
+        return $this->render('media/display_media.html.twig', [
+            'media' => $media,
+            'title' => $title,
+        ]);
+    }
+
 }

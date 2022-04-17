@@ -3,8 +3,10 @@
 
 {% block body %}
 
-  <div class="card text-white bg-dark mb-3" style="max-width: 20rem;">
-    <div class="card-body">
+  <div class="card text-white bg-dark mb-3" style="width: 100%;">
+
+    <h3>Commentaire : </h3>
+    <div class="card-body" style="background-color: #ecf0f1; padding : 6px;">
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1">{{ commentParent.account.fullName }}</h5>
         <small class="text-muted">{{ commentParent.createdAt|date("d/m/Y") }}</small>
