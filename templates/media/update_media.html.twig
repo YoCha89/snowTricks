@@ -12,9 +12,9 @@
         </div>
         {% if imgp is not null %}
             {% if imgp != true %}
-                <p>Cette image est liée à la figure {{media.trick.name}} qui comporte comme image "thumbnail" : {{imgp}} </p>
+                <p style="color:#18bc9c;">Cette image est liée à la figure {{media.trick.name}} qui comporte comme image "thumbnail" : {{imgp}} </p>
             {% else %}
-                <p>Cette image est liée en tant que thumbnail de la figure {{media.trick.name}}</p>
+                <p style="color:#18bc9c;">Cette image est liée en tant que thumbnail de la figure {{media.trick.name}}</p>
             {% endif %}
         {% endif %}
         {{include('media/_media_form.html.twig')}}

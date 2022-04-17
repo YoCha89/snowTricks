@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\AccountType;
 use App\Entity\Account;
+use App\Entity\Comment;
 
 class AccountController extends AbstractController
 {
@@ -15,14 +16,13 @@ class AccountController extends AbstractController
      * @Route("/tmp", name="tmp")
      */
     public function tmp(): Response
-    {
-        $pass = '1234';
-        $password = password_hash($pass, PASSWORD_DEFAULT);
+    { 
         
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(Account::class)->findOneBy(array('email'=>'ychardel@gmail.com'));
 
-        $user->setPassword($password);
+        $user->setRoles(['ROLE_ADMIN']);
+
 
         $em->persist($user);
         $em->flush();
@@ -30,42 +30,74 @@ class AccountController extends AbstractController
         return $this->redirect($this->generateUrl('create_trick')); 
     }
 
+
     /**
-     * @Route("/create_account", name="create_account")
+     * @Route("/update_account", name="update_account")
      */
-    public function createAccountAction(Request $request): Response {
-        $account = new Account();
-        $form = $this->createForm(AccountType::class);
-        $form->handleRequest($request);
+    public function updateAccountAction(Request $request): Response {
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            $email = $form['email']->getData();
-            $fullName = $form['fullName']->getData();
-            $pass = $form['password']->getData();
-            $profilePic = $form['profilePic']->getData();
-            dd($profilePic);
-            $check = $em->getRepository(Account::class)->findBy(array('email'=>$email));
+        return $this->redirect($this->generateUrl('index')); 
+    }
 
-             if($check == null){
-                $account->setEmail($name);
-                $account->setFullName($content);
-                $account->setPass($pass);
+    /**
+     * @Route("/delete_account", name="delete_account")
+     */
+    public function deleteAccountAction(Request $request): Response {
+        
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
 
-                
-                $em->persist($account);
-                $em->flush();
+        $userComments = $em->getRepository(Comment::class)->findBy(array('account' => $user));
 
-                return $this->redirect($this->generateUrl('create_account')); 
-                
-            }else{
-                $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure ou <a href="{{ path(\'update_trick\') }}">mettez à jour la figure portant ce nom</a>.');
+        foreach($userComments as $comment){
+            $comments = $comment->getComments();/*
+            $lvl = $comment->getLvl();
+            $tabComments = [];
+            $tabComments[$lvl] = array($comment);
+
+            $tabFinal = $this->forward('App\Controller\CommentController::prepareDeletionComments', [
+                'comments'  => $comments,
+                'lvl' => $lvl,
+                'tabComments' => $tabComments,
+            ]);*/
+
+            $tabComments = $this->prepareCommentsByThreads($comments, $user);
+
+    /*        foreach($tabComments as $tab){
+                $em->remove($tab);
+            }*/
+
+            $em->flush();
+        }
+
+        return $this->redirect($this->generateUrl('index')); 
+    }
+
+    protected function prepareCommentsByThreads($comments, $user){
+        $commentsId = [];
+        $lvlMax = 1;
+
+        foreach($comments as $comment){
+            $commentsId[$comment->getId()] = $comment;
+
+            if($comment->getLvl()>$lvlMax){
+                $lvlMax = $comment->getLvl();
             }
         }
 
-        return $this->render('account/create_account.html.twig', [
-            'form' => $form->createView(),
-            'account' => $account
-        ]);
+        /*for ($i=$lvlMax; $i<=1; $i--){
+            foreach($comments as $com){
+                if($com->getLvl() == $i){
+                    $comParent = $com->getCommentParent();
+                    while($comParent != null){
+                        
+                        if($comParent->getAccount() == $user){
+                            unset()
+                        }
+                    }
+                }
+            }
+        }*/
+
     }
 }

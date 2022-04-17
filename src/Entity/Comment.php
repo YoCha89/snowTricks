@@ -69,6 +69,11 @@ class Comment
      */
     private $lvl;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Thread::class, inversedBy="comments")
+     */
+    private $thread;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -213,6 +218,18 @@ class Comment
     public function setLvl(?int $lvl): self
     {
         $this->lvl = $lvl;
+
+        return $this;
+    }
+
+    public function getThread(): ?Thread
+    {
+        return $this->thread;
+    }
+
+    public function setThread(?Thread $thread): self
+    {
+        $this->thread = $thread;
 
         return $this;
     }

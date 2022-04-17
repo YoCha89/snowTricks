@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Éditer une figure{% endblock %}
+
+{% block body %}
+
+<div id="delCheck">
+    <p>Vous êtes sur le ppoint de supprimer le trick : <span style="font-weight: bold;">{{trick.name}}</span>.<br/> Confirmez-vous la suppression ? </p>
+</div>
+
+<div id="delConf">
+    <form method="post" action="{{ path('delete_trick', {'id': trick.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="checkDone" value="checkDone">
+    <button class="btn" style="background-color:#e74c3c; color:white;">Supprimer le trick</button>
+    </form>
+</div>
+
+{% endblock %}

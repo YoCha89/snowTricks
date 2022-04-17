@@ -25,11 +25,13 @@
       {% if (media.type == 'img') or (media.type == 'imgP')  %} 
 
         <tr class="table-secondary">
-          <th scope="row"><img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}"></th>
+          <th scope="row"><img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 190px;"></th>
           <td> {{ media.title }} </td>
-            {% if media.trick != NULL  %} 
-              <td> {{ media.trick.name }} </td>
-            {% endif %}
+          {% if media.trick is not null%} 
+            <td> {{ media.trick.name }} </td>
+          {% else %} 
+            <td> Pas de trick associé </td>
+          {% endif %}
 
           <td> {{ media.type }} </td>
           <td> 
@@ -41,9 +43,14 @@
       {% elseif media.type == 'vid' %} 
 
         <tr class="table-secondary">
-          <th scope="row"><img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}"></th>
+          <th scope="row"><img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 190px;"></th>
           <td> {{ media.title }} </td>
-          <td> {{ media.trick.name }} </td>
+          {% if media.trick is not null%} 
+            <td> {{ media.trick.name }} </td>
+          {% else %} 
+            <td> Pas de trick associé </td>
+          {% endif %}
+          
           <td> {{ media.type }} </td>
           <td> 
             <a href="{{ path('update_media', {id: media.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
