@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Supprimer son compte{% endblock %}
+
+{% block body %}
+
+<div id="delCheck">
+    <p>Vous êtes sur le point de supprimer votre compte et perdre toutes les informations liés à celui-ci.<br/> Confirmez-vous la suppression ? </p>
+</div>
+
+<div id="delConf">
+    <form method="post" action="{{ path('delete_account') }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="checkDone" value="checkDone">
+    <button class="btn" style="background-color:#e74c3c; color:white;">Supprimer le compte</button>
+    </form>
+</div>
+
+{% endblock %}

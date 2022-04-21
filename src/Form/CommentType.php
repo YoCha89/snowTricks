@@ -14,6 +14,7 @@ class CommentType extends AbstractType
         $builder
             ->add('content', null, [
                 'required'   => true,
+                'label' => ' ',
             ])
            /* ->add('trick')
             ->add('commentParent')*/

@@ -24,14 +24,14 @@ class CommentController extends AbstractController
 
             $em = $this->getDoctrine()->getManager();
 
-            $trickId = $comment->getTrick()->getId();
+            $slug = $comment->getTrick()->getSlug();
 
             $comment->setUpdatedAt(new \DateTime());
 
             $em->persist($comment);
             $em->flush();
 
-            return $this->redirectToRoute('show_trick', ['id' => $trickId]); 
+            return $this->redirectToRoute('show_trick', ['slug' => $slug]); 
         }
 
         $title = 'Mettre à jour votre commentaire';
@@ -49,7 +49,7 @@ class CommentController extends AbstractController
     public function deleteCommentAction(Request $request, Comment $comment): Response
     {   
         $em = $this->getDoctrine()->getManager();
-        $id = $comment->getTrick()->getId();
+        $slug = $comment->getTrick()->getSlug();
 
         $lvl = $comment->getLvl();
         $comments = $comment->getComments();
@@ -66,11 +66,11 @@ class CommentController extends AbstractController
 
         $em->flush();
 
-        return $this->redirectToRoute('show_trick', ['id' => $id]);
+        return $this->redirectToRoute('show_trick', ['slug' => $slug]);
     }
 
     
-    //Prepare the comments  and replies to be deleted with heritage concerns. Avoid constraints violation by cancelling their interconnected relationships through a recursive function.
+    //Prepare the comments  and replies to be deleted with heritage concerns. Avoid constraints violation by cancelling their interconnected relationships through a recursive function. 
     protected function prepareDeletionComments($comments, $lvl, $tabComments){
 
         $em = $this->getDoctrine()->getManager();
