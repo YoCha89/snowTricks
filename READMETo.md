@@ -1,6 +1,6 @@
 Project Name : SnowTricks <br/>
 
-The App _ SnowTricks works both as a directory of snowboard tricks and a chat room for snowboard enthusiast. The site allows:<br/>
+The App, SnowTricks, works both as a directory of snowboard tricks and a chat room for snowboard enthusiast. The site allows:<br/>
 
 <ul>
     <li> The creation/modification of tricks, including images, thumbnails and descriptions</li>
@@ -24,27 +24,24 @@ Installing the app :<br/>
     <li>Throught your CLI, run "composer install" to get the needed dependances</li>
     <li>Create a database named : snowtricks</li>
     <li>Execute the sql file included with the project file </li>
-    
-    <li>Au sein du code, quelque modification rendront entièrement viable l’application. Vous devez paramétrer les boites mails utilisées au sein des méthodes gérants les envois d’email (une en frontend, une autre en backend). Cette fonctionnalité a été prévu pour une adresse mail google. A partir de la racine du projet :</li>
-        <ol> 
-            1. Dans  App>Frontend>Modules>Account>AccountController, au sein de la méthode privée sendMail(), entrez
-                <ol>
-                    <li>l’adresse email que vous utilisez pour envoyer les mails à partir de l’application ligne : 368 et 373 ($mailAdmin->Username et $mailAdmin->setFrom)</li>
-                    <li>le mot de passe de cette boite mail ligne : 369 ($mailAdmin->Password)</li>
-                    <li>l’adresse email que vous utilisez pour recevoir les mails et répondre en tant qu’ administrateur, ligne : 274 ($AdminMail) et 403 ($masterAdmin)  </li>
-                </ol>
-            2. Répétez l’opération pour la méthode du même nom coté backend :  App>Backend>Modules>Admin>AdminController
-                <ol>
-                    <li>l’adresse email que vous utilisez pour envoyer les mails à partir de l’application ligne : 285 et 290  ($mailAdmin→Username et $mailAdmin->setFrom)</li>
-                    <li>le mot de passe de cette boite mail ligne : 286 ($mailAdmin->Password)</li>
-                    <li>l’adresse email que vous utilisez pour recevoir les mails et répondre en tant qu’ administrateur, ligne : 153 ($masterAdmin)</li>
-                </ol>
+    <li>To make the mailer work, register for free in MailTrap. An app that will capture our mail but work like a mailbox, allowing the test of mailer related action within the app </li>
+    <li>Two function requires a working email system :</li>
+        <ol>             
+            <li>
+                 1. verifyEmail : which allow the confirmation of a register and the assurance the mail given is an effective one<hr/>
+                 In  src>controller>RegistrationController, you'll find the protected function verifyEmail(). Put the mail adress you will use to send email in the following code line : ->from(new Address('YOUR_ADRESS', 'systemMail'))
+            </li>       
+            <li>
+                 2. newPassEmail : to use the user access to his own email as a safety check to update the app password.<hr/>
+                 In  src>controller>SecurityController, you'll find the protected function newPassEmail. Put the mail adress you will use to send email in the following code line : ->from(new Address('YOUR_ADRESS', 'systemMail'))
+            </li>  
         </ol>
-    <li>Vous pouvez créer un compte d’utilisateur via l’interface de l’application.</li>
-    <li>Vous avez en revanche besoin d’un compte administrateur d’entré. Vous pouvez utiliser les identifiants du compte par défaut :</li>
-        ◦ Pseudo : masterAdmin
-        ◦ Pass : Master&2021
+    <li>You can create a user account through the App interface.</li>
+    <li>To check the app functionnement with admin right, connect with the test admin account :</li>
+        ◦ Pseudo : admin@gmail.com
+        ◦ Pass : 1234
 </ol>
+
 © 2022 GitHub, Inc.
 Terms
 Privacy
