@@ -3,14 +3,12 @@
         <div class="appForm">
         {{ form_start(form) }}
         <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
-            <div class="form-group row">
-                    {{ form_row(form.content) }}
+            <div>
+                {{ form_row(form.content) }}
             </div>
         </div>
-
-        <div class="button">
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
-        </div>
+       
+            <button type="submit" class="btn btn-primary" style="background-color:#2c3e50; color:white;">Enregistrer</button>
 
         {{ form_end(form) }}
         </div>

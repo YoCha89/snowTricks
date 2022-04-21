@@ -1,28 +1,23 @@
 
-<div class="box-body">
     <div class="appForm">
+        <h4 class="h3 mb-3 font-weight-normal">Ajouter un média</h4>
+        <div class="smartField">
     {{ form_start(form) }}
-    <div class="part mb-2" style="display: flex; justify-content: space-around; margin-bottom: 2em;">
-        <div class="form-group row">
-            <section class="model" style="width: 50%;">
-                {{ form_row(form.title) }}
-            </section>
-        </div>
+        </div><br/>
+    <div class="part mb-2" style="display: flex; flex-direction:column; justify-content: space-between; margin-bottom: 2em;">
+        <div class="smartField">
+            {{ form_row(form.title) }}
+        </div><br/>
     {% if update is not defined %} 
-        <div class="form-group row">
-            <section class="capacity" style="width: 45%;">
-                {{ form_row(form.mediaPath) }}
-            </section>
-        </div>
+        <div class="smartFieldUpload">
+            {{ form_row(form.mediaPath) }}
+        </div><br/>
     {% else %}
         <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 140px;">
     {% endif %}
     </div>
 
-    <div class="button">
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </div>
+        <button type="submit" class="btn" style="background-color:#2c3e50; color:white;">Enregistrer</button>
 
     {{ form_end(form) }}
     </div>
-</div>

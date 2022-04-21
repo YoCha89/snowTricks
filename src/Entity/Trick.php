@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,12 +31,12 @@ class Trick
     private $name;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true, unique=true)
      */
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $slug;
 

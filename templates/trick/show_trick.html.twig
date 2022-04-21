@@ -5,109 +5,132 @@
 {% block body %}
 
 
-  <div class="list-group">
-    <div class="list-group-item list-group-item-action flex-column align-items-start active">
+<div class="list-group">
+  <div class="list-group-item list-group-item-action flex-column align-items-start active">
+    {% if app.user is not null %}
+      {% if is_granted('ROLE_ADMIN') %}
+        <div class = "adminActions" style="text-align: right; margin:2%;">
+          <a href="{{ path('update_trick', {slug:trick.slug}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+          <a href="{{ path('delete_trick', {slug:trick.slug}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
+        </div>
+      {% endif %}
+    {% endif %}
+    <div class="trickTitle" style="text-align: center; margin: 7%; font-weight: bold; color : #18bc9c;">
+      <h1>{{trick.name}}</h1>
+    </div>
+    <div class="imgCarouss">
+      <div class="imgprinc" style="text-align:center;">
+        {% if trick.medias[0] is defined %} 
+          {% for img in trick.medias %} 
+            {% if img.type == 'imgP' %}
+              {% set imgp = img.mediaPath %}
+            {% endif %}
+          {% endfor %}
+            {% if imgp is defined %} 
+              <img class="showImFull" src="{{ asset(imgp) }}">
+              <img class="showImSmart" src="{{ asset(imgp) }}" style = "max-width: : 200px;">
+            {% else %} 
+              <img class="showImFull" src="{{ asset(trick.medias[0].mediaPath) }}">
+              <img class="showImSmart" src="{{ asset(trick.medias[0].mediaPath) }}" style = "max-width: 200px; text-align:center;">
+            {% endif %}
+          
+        {% else %} 
+          <img class="showImFull" src="{{ asset('images/no_image.png') }}" style = "max-width: 50%;">
+          <img class="showImSmart" src="{{ asset('images/no_image.png') }}" style = "max-width: 100%; text-align:center;">
+        {% endif %}
+
+      </div>
+
+      <div class="imgSec">
+        {% for media in trick.medias %} 
+            <a class="page-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
+        {% endfor %}
+      </div>
+      <div class="imgSecSmart"> 
+        <button id="medSee" onclick="toggleImg()" style="display:block; background-color:#18bc9c; color:#2c3e50; font-weight:bold; border-radius: 10%; margin: auto;">See Medias</button>
+        <div id="displayMedia" style="display:none;">{% include 'media/_display_smart_media.html.twig' with {'medias': trick.medias} %}</div>
+    </div>
+
+    <div class="d-flex w-100 justify-content-between">
+      <h3>Description</h3>
+      <p> {{trick.content}} </p>
+    </div>
+    <div class="spe">
+      <div class="specification">
       {% if app.user is not null %}
         {% if is_granted('ROLE_ADMIN') %}
-          <div class = "adminActions" style="text-align: right; margin:2%;">
-            <a href="{{ path('update_trick', {id:trick.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
-            <a href="{{ path('delete_trick', {id:trick.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a>
-          </div>
+          <p>Catégorie : {{ trick.category.name }}</p>
+          <p>Créé le : {{ trick.createdAt|date("m/d/Y") }}</p> 
+          <p>Mis à jour le : {{ trick.updatedAt|date("m/d/Y") }}</p>
         {% endif %}
       {% endif %}
-      <div class="trickTitle" style="text-align: center; margin: 7%; font-weight: bold; color : #18bc9c;">
-        <h1>{{trick.name}}</h1>
-      </div>
-      <div class="imgCarouss">
-        <div class="imgprinc">
-          {% if trick.medias[0] is defined %} 
-            {% for img in trick.medias %} 
-              {% if img.type == 'imgP' %}
-                {% set imgp = img.mediaPath %}
-              {% endif %}
-            {% endfor %}
-              {% if imgp is defined %} 
-                <img class="showImFull" src="{{ asset(imgp) }}">
-                <img class="showImSmart" src="{{ asset(imgp) }}" style = "max-width: : 200px;">
-              {% else %} 
-                <img class="showImFull" src="{{ asset(trick.medias[0].mediaPath) }}">
-                <img class="showImSmart" src="{{ asset(trick.medias[0].mediaPath) }}" style = "max-width: 200px;">
-              {% endif %}
-            
-          {% else %} 
-            <img class="showImFull" src="{{ asset('images/no_image.png') }}" style = "max-width: 50%;">
-            <img class="showImSmart" src="{{ asset('images/no_image.png') }}" style = "max-width: : 200px;">
-          {% endif %}
-
-        </div>
-
-        <div class="imgSec">
-          {% for media in trick.medias %} 
-              <a class="page-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
-          {% endfor %}
-        </div>
-        <div class="imgSecSmart"> 
-          <button style="background-color:#18bc9c; color:#2c3e50; font-weight:bold; border-radius: 10%">See Medias</button>
-      </div>
-
-      <div class="d-flex w-100 justify-content-between">
-        <h3>Description</h3>
-        <p> {{trick.content}} </p>
-      </div>
-      <div class="spe">
-        <div class="specification">
-        {% if app.user is not null %}
-          {% if is_granted('ROLE_ADMIN') %}
-            <p>Catégorie : {{ trick.category.name }}</p>
-            <p>Créé le : {{ trick.createdAt|date("m/d/Y") }}</p> 
-            <p>Mis à jour le : {{ trick.updatedAt|date("m/d/Y") }}</p>
-          {% endif %}
-        {% endif %}
-        </div>
       </div>
     </div>
+  </div>
 
+  {% if app.user is not null %}
     <div class="form-group">
+      <p style="color:#2c3e50;">Ajouter un commentaire :</p>
       {% include 'comment/_comment_form.html.twig' with {'form': form} %}
     </div>
+  {% endif %}
 
-<hr style="color: #2c3e50; border:solid 2px;">
+  <hr style="color: #2c3e50; border:solid 2px;">
 
-    {% for comment in comments %}
-<div class="thread">
-      {% include 'comment/_comment_thread.html.twig' with {'comment': comment, 'anonymous' : anonymous} %}
-</div>
-<hr style="color: #2c3e50; border:solid 2px;">
-    {% endfor %} 
+      {% for comment in comments %}
+  <div class="thread">
+        {% include 'comment/_comment_thread.html.twig' with {'comment': comment, 'anonymous' : anonymous} %}
+  </div>
+  <hr style="color: #2c3e50; border:solid 2px;">
+      {% endfor %} 
 
-  <div class="pagination">
-    {% if totalPage != 0 %}
-      {% if page != 1 %} 
-        <div class="turn">
-          <form method="post" action="{{ path('show_trick', {'page': page, 'id':trick.id}) }}">
-            <input id="page" name="page" type="hidden" value=" {{page}} ">
-            <input id="turn" name="turn" type="hidden" value="previous">
-            <button class="btn_page" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/previous.png') }}" alt="previous" style ="max-width: 45px;"></button>
-          </form>
+    <div class="pagination">
+      {% if totalPage != 0 %}
+        {% if page != 1 %} 
+          <div class="turn">
+            <form method="post" action="{{ path('show_trick', {'page': page, 'slug':trick.slug}) }}">
+              <input id="page" name="page" type="hidden" value=" {{page}} ">
+              <input id="turn" name="turn" type="hidden" value="previous">
+              <button class="btn_page" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/previous.png') }}" alt="previous" style ="max-width: 45px;"></button>
+            </form>
+          </div>
+        {% endif %}
+
+        <div id="currPage">
+          {{page}}/{{totalPage}}
         </div>
+
+        {% if page != totalPage %} 
+          <div class="turn">  
+            <form method="post" action="{{ path('show_trick', {'page': page, 'slug':trick.slug}) }}">
+              <input id="page" name="page" type="hidden" value=" {{page}} ">
+              <input id="turn" name="turn" type="hidden" value="next">
+              <button class="btn_page" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/next.png') }}" alt="next" style ="max-width: 45px;"></button>
+            </form>
+          </div>
+        {% endif %}    
       {% endif %}
 
-      <div id="currPage">
-        {{page}}/{{totalPage}}
-      </div>
-
-      {% if page != totalPage %} 
-        <div class="turn">  
-          <form method="post" action="{{ path('show_trick', {'page': page, 'id':trick.id}) }}">
-            <input id="page" name="page" type="hidden" value=" {{page}} ">
-            <input id="turn" name="turn" type="hidden" value="next">
-            <button class="btn_page" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/next.png') }}" alt="next" style ="max-width: 45px;"></button>
-          </form>
-        </div>
-      {% endif %}    
-    {% endif %}
-
+    </div>
   </div>
+</div>
+<script type="text/javascript">
+  function toggleImg(){
 
-  </div>
+    var toToggle = document.getElementById("displayMedia");     
+    var medSee = document.getElementById("medSee"); 
+
+    if (toToggle.style.display === "none") {
+      toToggle.style.display ="block";
+      /*medSee.style.background-color =#ecf0f1;
+      medSee.style.color =#979999;*/
+      medSee.style.value ="Hide Media";
+    } else {
+      toToggle.style.display ="none";
+   /*   medSee.style. = #18bc9c;
+      medSee.style.color = #2c3e50;*/
+      medSee.style.value = "See Medias";
+    }
+  } 
+</script>
 {% endblock %}

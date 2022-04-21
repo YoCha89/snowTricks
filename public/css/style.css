@@ -6911,6 +6911,44 @@ a.list-group-item-danger.active:focus {
 /*ADDED CSS*/
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*/
 @media (min-width: 300px) and (max-width: 767px)/*Smartphone*/{
+
+.manageMedia{
+  display: none;
+}
+
+h1{
+  font-size: 23px;
+  margin-bottom: 35px;
+}
+
+#cateForm{
+  color: #18bc9c;  
+}
+
+.smartFieldUpload{
+  width :70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.smartField{
+  width :70%;
+}
+
+.appForm{
+  background-color: #ecf0f1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  padding: 3px;
+  border-radius: 2%;
+}
+
+
+
 .cardDetail{
   display: flex;
   justify-content:space-around;
@@ -6971,7 +7009,9 @@ a.list-group-item-danger.active:focus {
 
 .imgSecSmart{
   margin: 10px;
-  text-align: center;
+  display:flex; 
+  justify-content:center; 
+  align-item:center;
 }
 
 #replyFull{
@@ -6994,6 +7034,20 @@ a.list-group-item-danger.active:focus {
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*/
 @media all and (min-width: 768px) {
+
+.addMedia{
+  display: none;
+}
+ 
+.fieldComment{
+  width :500px;
+
+}
+
+.btnSmart{
+  background-color:#e74c3c; 
+  color:white;
+}
 
 #arrowFullsmart{
   display:  none;
@@ -7103,7 +7157,7 @@ footer{
   justify-content: space-between;
   align-items: center;
   margin: auto;
-  padding: 3px;
+  padding: 26px;
   border-radius: 2%;
 }
 
@@ -7153,7 +7207,7 @@ footer{
 h4, h3, h2, h1{
   color: #18bc9c;
 }
-
+18bc9
 legend{
   color: #18bc9c;
 }

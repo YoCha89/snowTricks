@@ -8,17 +8,36 @@
     {% endfor %}
 
     <div class="appForm">
-    <h1>Créez votre compte</h1>
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}<br/>
-        {{ form_row(registrationForm.fullName) }}<br/>
+    <h1 class="h3 mb-3 font-weight-normal">Créez votre compte</h1>
+
+        <div class="smartField">
+        {{ form_start(registrationForm) }}
+        </div>
+
+        <div class="smartField">
+        {{ form_row(registrationForm.email) }}
+        </div><br/>
+
+        <div class="smartField">
+        {{ form_row(registrationForm.fullName) }}
+        </div><br/>
+
+        <div class="smartField">
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
-        }) }}<br/>
-        {{ form_row(registrationForm.profilePic) }}<br/>
-        {{ form_row(registrationForm.agreeTerms) }}<br/>
+        }) }}
+        </div><br/>
 
-        <button type="submit" class="btn">Register</button>
+        <div class="smartFieldUpload">
+        {{ form_row(registrationForm.profilePic) }}
+        </div><br/>
+
+        <div class="smartField">
+        {{ form_row(registrationForm.agreeTerms) }}
+        </div><br/>
+        
+
+        <button type="submit" class="btn" style="background-color:#2c3e50; color:white;">Register</button>
     {{ form_end(registrationForm) }}
 </div>
 {% endblock %}

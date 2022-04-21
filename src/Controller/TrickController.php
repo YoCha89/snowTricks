@@ -24,12 +24,9 @@ class TrickController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, $origin = null): Response
     {
-        
-        $this->addFlash('error', 'Veuillez confirmer la création de votre compte en cliquant sur le lien qui vous a été envoyé par email.');
 
-        // dd($request->getSession()->getFlashBag());
         $em = $this->getDoctrine()->getManager();
         $tricks = $em->getRepository(Trick::class)->findByOrder();
 
@@ -88,19 +85,22 @@ class TrickController extends AbstractController
                 return $this->redirect($this->generateUrl('/')); 
                 
             }else{
-                $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure ou <a href="{{ path(\'update_trick\') }}">mettez à jour la figure portant ce nom</a>.');
+                $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure.');
             }
 
         }
 
+        $titleForm = 'Ajouter une figure';
+
         return $this->render('trick/create_trick.html.twig', [
             'form' => $form->createView(),
-            'trick' => $trick
+            'trick' => $trick,
+            'titleForm' =>$titleForm,
         ]);
     }
 
     /**
-     * @Route("/update_trick/{id}", name="update_trick")
+     * @Route("/update_trick/{slug}", name="update_trick")
      */
     public function updateTrickAction(Request $request, Trick $trick): Response {
 
@@ -125,19 +125,22 @@ class TrickController extends AbstractController
                 return $this->redirect($this->generateUrl('index')); 
                 
             }else{
-                $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure ou <a href="{{ path(\'update_trick\') }}">mettez à jour la figure portant ce nom</a>.');
+                $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure.');
             }
 
         }
 
+        $titleForm = 'Modifier une figure';
+
         return $this->render('trick/update_trick.html.twig', [
             'form' => $form->createView(),
-            'trick' => $trick
+            'trick' => $trick,
+            'titleForm' =>$titleForm,
         ]);
     }
 
     /**
-     * @Route("/show_trick/{id}", name="show_trick")
+     * @Route("/show_trick/{slug}", name="show_trick")
      */
     public function showTrickAction(Request $request, Trick $trick): Response{
 
@@ -163,7 +166,7 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // $comment = $form->getData();
+
             $author = $this->getUser();
 
             $comment->setAccount($author);
@@ -172,7 +175,7 @@ class TrickController extends AbstractController
             $em->persist($comment);
             $em->flush();
 
-            return $this->redirectToRoute('show_trick', ['id' => $trick->getId()]); 
+            return $this->redirectToRoute('show_trick', ['slug' => $trick->getSlug()]); 
         }
 
         if($reply == false){
@@ -199,27 +202,6 @@ class TrickController extends AbstractController
             $title = $trick->getName();
             $anonymous = 'images/User.png';
 
-       /*     $formMediaSmart = $this->createFormBuilder()
-            ->setAction($this->generateUrl('display_media'))
-            ->setMethod('POST')
-            ->add('medias', EntityType::class, [
-            // looks for choices from this entity
-            'class' => Media::class,
-            'query_builder' => function (EntityRepository $er) {
-                return $er->createQueryBuilder('m')
-                    ->where('m.trick = ?1')
-                    ->setParameter(1, $trick);
-                },
-            // uses the User.username property as the visible option string
-            'choice_label' => 'title',
-
-            // used to render a select box, check boxes or radios
-            'multiple' => false,
-            'required' => false,
-            // 'expanded' => true,
-            ])
-            ->getForm();*/
-
             return $this->render('trick/show_trick.html.twig', [
                 'trick' => $trick,
                 'form' => $form->createView(),
@@ -230,6 +212,7 @@ class TrickController extends AbstractController
                 'page' => $pageCom,
                 'totalPage' => $totalPage,
             ]);  
+
         }else{
             $title = 'Réponse à '. $commentParent->getAccount()->getFullName();
             $anonymous = 'images/User.png';
@@ -245,13 +228,12 @@ class TrickController extends AbstractController
     }
 
        /**
-     * @Route("/delete_trick/{id}", name="delete_trick")
+     * @Route("/delete_trick/{slug}", name="delete_trick")
      */
     public function deleteTrickAction(Request $request, Trick $trick): Response{
         $em = $this->getDoctrine()->getManager();
 
         if($request->get('checkDone') != null){
-            dd('careful there !');
             $comments = $trick->getComments();
 
             foreach($comments as $com){
@@ -270,7 +252,7 @@ class TrickController extends AbstractController
             $em->remove($trick);
             $em->flush();
             
-            return $this->redirectToRoute('');            
+            return $this->redirectToRoute('index');            
         }else{
             $title = 'Confirmation de suppression';
             return $this->render('trick/deletion_check.html.twig', [
@@ -278,11 +260,10 @@ class TrickController extends AbstractController
                 'title' => $title
             ]);  
         }
- 
     }
 
     /**
-     * @Route("/define_thumbnail/{id}", name="define_thumbnail")
+     * @Route("/define_thumbnail/{slug}", name="define_thumbnail")
      */
     public function defineThumbnailAction(Request $request, Trick $trick): Response {
 

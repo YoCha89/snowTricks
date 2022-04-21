@@ -1,23 +1,24 @@
 
 <div class="box-body">
     <div class="appForm">
+        <h4 class="h3 mb-3 font-weight-normal"> {{titleForm}} </h4><br/>
     {{ form_start(form) }}
     <div class="part mb-2" style="display: flex; flex-direction:column; justify-content: space-between; align-item:center; margin-bottom: 2em;">
-        <section class="model" style="width: 50%;">
+        <div class="smartField">
             {{ form_row(form.name) }}
-        </section>
+        </div><br/>
 
-        <section class="capacity" style="width: 45%;">
+        <div class="smartField">
             {{ form_row(form.content) }}
-        </section>
+        </div><br/>
 
-        <section class="capacity" style="width: 45%;">
+        <div class="smartField">
             {{ form_row(form.medias) }}
-        </section>
+        </div><br/>
 
-        <section class="capacity" style="width: 45%;">
+        <div class="smartField">
             {{ form_row(form.category) }}
-        </section>
+        </div><br/>
     </div>
 
     <div class="button">
