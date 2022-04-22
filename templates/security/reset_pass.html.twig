@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset pass{% endblock %}
+
+{% block body %}
+<div class="appForm">
+     {{ form_start(form) }}
+    <div class="part mb-2" style="display: flex; flex-direction:column; justify-content: space-between; align-item:center; margin-bottom: 2em;">
+        <div class="smartField">
+            {{ form_row(form.fullName) }}
+        </div><br/>
+        <div class="smartField">
+        {{ form_row(form.plainPassword1, {
+            label: 'Password'
+        }) }}
+        </div><br/>
+        <div class="smartField">
+        {{ form_row(form.plainPassword2, {
+            label: 'Password'
+        }) }}
+        </div><br/>
+    </div>
+    <div class="button">
+        <button type="submit" class="btn btn-primary"> <i class="fa fa-save"></i>Mettre à jour mon mot de passe</button>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

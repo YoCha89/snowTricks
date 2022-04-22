@@ -13,6 +13,12 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use App\Entity\Account;
 use App\Security\AppAuthenticator;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityController extends AbstractController
 {   
@@ -75,26 +81,26 @@ class SecurityController extends AbstractController
     /**
      * @Route("/new_pass", name="new_pass")
      */
-    public function newPassAction(Request $request) {
+    public function newPassAction(Request $request, MailerInterface $mailer) {
 
         $form = $this->createFormBuilder()
             ->add('fullName')
             ->getForm();
 
-        $form->handleRequest();
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $fullName = $form->get('fullName');
+            $fullName = $form->get('fullName')->getData();
             $user = $em->getRepository(Account::class)->findOneBy(array('fullName'=>$fullName));
 
             if($user != null){
                 $email = $user->getEmail();
 
-                $this->newPassEmail($email);
-                $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compote');
-                return $this->redirect($this->generateUrl('/')); 
+                $this->newPassEmail($mailer, $email, $fullName);
+                $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compte');
+                return $this->redirect($this->generateUrl('index')); 
             }else{
                 $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom');  
                 return $this->redirect($this->generateUrl('/')); 
@@ -109,11 +115,31 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    protected function resetPass(){
+    /**
+     * @Route("/reset_pass", name="reset_pass")
+     */
+    public function resetPass(Request $request, UserPasswordHasherInterface $userPasswordHasher){
 
         $form = $this->createFormBuilder()
             ->add('fullName')
-            ->add('plainPassword', PasswordType::class, [
+            ->add('plainPassword1', PasswordType::class, [
+                // instead of being set onto the object directly,
+                // this is read and encoded in the controller
+                'mapped' => false,
+                'attr' => ['autocomplete' => 'new-password'],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please enter a password',
+                    ]),
+                    new Length([
+                        'min' => 6,
+                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        // max length allowed by Symfony for security reasons
+                        'max' => 4096,
+                    ]),
+                ],
+            ])
+            ->add('plainPassword2', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
@@ -132,34 +158,40 @@ class SecurityController extends AbstractController
             ])
             ->getForm();
 
-        $form->handleRequest();
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $fullName = $form->get('fullName');
-            $plainPassword = $form->get('plainPassword');
+            $fullName = $form->get('fullName')->getData();
+            $plainPassword1 = $form->get('plainPassword1')->getData();
+            $plainPassword2 = $form->get('plainPassword2')->getData();
 
+            if($plainPassword2 == $plainPassword1){
+                $user = $em->getRepository(Account::class)->findOneBy(array('fullName'=>$fullName));
 
-            $user = $em->getRepository(Account::class)->findOneBy(array('fullName'=>$fullName));
+                if($user != null){
+                    $user->setPassword(
+                        $userPasswordHasher->hashPassword(
+                            $user,
+                            $form->get('plainPassword1')->getData()
+                        )
+                    );
 
-            if($user != null){
-                $user->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                    )
-                );
+                    $em->persist($user);
+                    $em->flush();    
 
-                $em->persist($user);
-                $em->flush();    
-
-                $this->addFlash('success', 'Votre mot de pass a été mis à jour.');
-                return $this->redirect($this->generateUrl('/')); 
+                    $this->addFlash('success', 'Votre mot de pass a été mis à jour.');
+                    return $this->redirect($this->generateUrl('index')); 
+                }else{
+                    $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom.');  
+                    return $this->redirect($this->generateUrl('index')); 
+                }
             }else{
-                $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom.');  
-                return $this->redirect($this->generateUrl('/')); 
+                $this->addFlash('error', 'Vous avez utilisé 2 mots de passe différents.');  
+                return $this->redirect($this->generateUrl('reset_pass')); 
             }
+
 
   
         }
@@ -181,13 +213,16 @@ class SecurityController extends AbstractController
     }
 
     //used to send mail to the user
-    protected function newPassEmail(MailerInterface $mailer, $email){
+    protected function newPassEmail($mailer, $email, $fullName){
 
         $mailToSend = (new TemplatedEmail())
             ->from(new Address('yoachar89@gmail.com', 'systemMail'))
             ->to($email)
             ->subject('Confirmation Email')
-            ->htmlTemplate('registration/ask_pass_email.html.twig');
+            ->htmlTemplate('security/ask_pass_email.html.twig')
+            ->context([
+                'fullName' => $fullName,
+            ]);;
 
         $mailer->send($mailToSend);
     }
