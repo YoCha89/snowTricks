@@ -46,7 +46,10 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('profilePic', FileType::class,[
-                'mapped' => false   
+                'label' => 'Photo de profil',
+                'mapped' => false, 
+                'attr' =>array('id' => 'fileStyle', 'style' => 'display:none'),
+                'label_attr' => array('style' => 'background-color:#7b8a8b; padding:10px; border-radius: 6px 6px 6px 6px; color:#ecf0f1'),
             ])
         ;
     }

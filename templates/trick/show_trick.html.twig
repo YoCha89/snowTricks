@@ -41,14 +41,42 @@
 
       </div>
 
-      <div class="imgSec">
-        {% for media in trick.medias %} 
-            <a class="page-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
-        {% endfor %}
-      </div>
+      {% if trick.medias[0] is defined %} 
+        <div class="imgSec">
+          {% if pageMed != 1 %} 
+            <div class="turn">
+              <form method="post" action="{{ path('show_trick', {'slug': trick.slug,'trick':trick, 'pageMed': pageMed}) }}">
+                <input id="pageMed" name="pageMed" type="hidden" value=" {{pageMed}} ">
+                <input id="turn" name="turn" type="hidden" value="previous">
+                <button class="btn_pageMed" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/previous.png') }}" alt="previous" style ="max-width: 45px;"></button>
+              </form>
+            </div>
+          {% endif %}
+
+          <div id='paginationMed'>
+            {% for media in medias %} 
+                <a class="pageMed-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
+            {% endfor %}
+            <div id="currPageMed">
+              {{pageMed}}/{{totalPageMed}}
+            </div>
+          </div>
+
+          {% if pageMed != totalPageMed %} 
+            <div class="turn">  
+              <form method="post" action="{{ path('show_trick', {'slug': trick.slug,'trick':trick, 'pageMed': pageMed}) }}">
+                <input id="pageMed" name="pageMed" type="hidden" value=" {{pageMed}} ">
+                <input id="turn" name="turn" type="hidden" value="next">
+                <button class="btn_pageMed" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/next.png') }}" alt="next" style ="max-width: 45px;"></button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
       <div class="imgSecSmart"> 
         <button id="medSee" onclick="toggleImg()" style="display:block; background-color:#18bc9c; color:#2c3e50; font-weight:bold; border-radius: 10%; margin: auto;">See Medias</button>
-        <div id="displayMedia" style="display:none;">{% include 'media/_display_smart_media.html.twig' with {'medias': trick.medias} %}</div>
+        <div id="displayMedia" style="display:none; text-align:center;">{% include 'media/_display_smart_media.html.twig' with {'medias': trick.medias} %}</div>
     </div>
 
     <div class="d-flex w-100 justify-content-between">
@@ -124,12 +152,12 @@
       toToggle.style.display ="block";
       /*medSee.style.background-color =#ecf0f1;
       medSee.style.color =#979999;*/
-      medSee.style.value ="Hide Media";
+      medSee.innerHTML ="Hide Medias";
     } else {
       toToggle.style.display ="none";
    /*   medSee.style. = #18bc9c;
       medSee.style.color = #2c3e50;*/
-      medSee.style.value = "See Medias";
+      medSee.innerHTML = "See Medias";
     }
   } 
 </script>

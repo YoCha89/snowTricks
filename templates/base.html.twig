@@ -95,22 +95,26 @@
         </nav>
     </header>
     <body>
-        {{ dump(app.flashes) }}
-
-        <div id="flashDisplay">
+        <div class="flashDisplay">
             {% for key, message in app.flashes %}
-                {% if key == 'error' %} 
-                    <div class="alert alert-dismissible alert-danger">
-                        {{ message }}
-                    </div>
-                {% elseif key == 'success' %} 
-                    <div class="alert alert-dismissible alert-success">
-                        {{ message }}
-                    </div>
+                {% if key == 'error' %}
+                    {% for flash in message %}
+                        <div class="alert alert-dismissible alert-danger">
+                            {{ flash }}
+                        </div>
+                    {% endfor %} 
+                {% elseif key == 'success' %}
+                    {% for flash in message %}
+                        <div class="alert alert-dismissible alert-success">
+                            {{ flash }}
+                        </div>
+                    {% endfor %} 
                 {% elseif key == 'warning' %} 
-                    <div class="alert alert-dismissible alert-warning">
-                        {{ message }}
-                    </div>
+                    {% for flash in message %}
+                        <div class="alert alert-dismissible alert-warning">
+                            {{ flash }}
+                        </div>
+                    {% endfor %}
                 {% endif %}
             {% endfor %}
         </div>
