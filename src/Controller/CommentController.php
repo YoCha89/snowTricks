@@ -56,8 +56,10 @@ class CommentController extends AbstractController
         $tabComments = [];
         $tabComments[$lvl] = array($comment);
 
-        if(!empty($comments)){
+        if(count($comments) != 0){
             $tabComments = $this->prepareDeletionComments($comments, $lvl, $tabComments);
+        }else{
+            $tabComments[$lvl] = $comment;
         }
 
         foreach($tabComments as $tab){
@@ -94,7 +96,7 @@ class CommentController extends AbstractController
         foreach ($comments as $com){
             
             $check = count($com->getComments());
-            if ($check != 0) {var_dump('go there');
+            if ($check != 0) {
                 foreach($com->getComments() as $next){
                     array_push($nextBatch, $next);
                 }
@@ -108,6 +110,9 @@ class CommentController extends AbstractController
         $finalLvl = count($tabComments) - 1;
 
         while($finalLvl >= 1){
+            if(!isset($tabComments[$finalLvl])){
+                dd($finalLvl);
+            }
             foreach($tabComments[$finalLvl] as $delC){
                 $comChild = $delC->getComments();
                 foreach($comChild as $child){

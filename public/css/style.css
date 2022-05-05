@@ -6967,7 +6967,10 @@ h1{
   text-align: center;
 }
 
-#arrowFull{
+.arrowFullDown{
+  display: none;
+}
+.arrowFullUp{
   display: none;
 }
 
@@ -7012,6 +7015,7 @@ h1{
   display:flex; 
   justify-content:center; 
   align-item:center;
+  flex-direction: column;
 }
 
 #replyFull{
@@ -7038,6 +7042,11 @@ h1{
 .addMedia{
   display: none;
 }
+
+.paginationMed{
+  display: flex;
+  justify-content: center;
+}
  
 .fieldComment{
   width :500px;
@@ -7049,7 +7058,10 @@ h1{
   color:white;
 }
 
-#arrowFullsmart{
+.arrowSmartDown{
+  display:  none;
+}
+.arrowSmartUp{
   display:  none;
 }
 
@@ -7092,7 +7104,7 @@ h1{
   size : 80%;
 }
 
-#arrowSmart{
+.arrowSmart{
   display: none;
 }
 

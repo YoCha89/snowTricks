@@ -26,10 +26,9 @@ class TrickController extends AbstractController
      */
     public function index(Request $request, $origin = null): Response
     {
-
         $em = $this->getDoctrine()->getManager();
         $tricks = $em->getRepository(Trick::class)->findByOrder();
-
+        
         $totalPage = floor(count($tricks)/20);
 
         if(null != $request->get('page')){
@@ -38,7 +37,7 @@ class TrickController extends AbstractController
             if($request->get('turn') == 'next'){
                 $page = $oldPage + 1;
             }elseif($request->get('turn') == 'previous'){
-                $page = $page-1;
+                $page = $oldPage-1;
             }
             
             $offset = $page*20;
@@ -82,7 +81,7 @@ class TrickController extends AbstractController
                 $em->persist($trick);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('/')); 
+                return $this->redirect($this->generateUrl('index')); 
                 
             }else{
                 $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure.');
@@ -145,6 +144,31 @@ class TrickController extends AbstractController
     public function showTrickAction(Request $request, Trick $trick): Response{
 
         $em = $this->getDoctrine()->getManager();
+
+        $mediasRaw = $trick->getMedias();
+        $medias = [];
+
+        foreach($mediasRaw as $med){
+            array_push($medias, $med);
+        }
+
+        $totalPageMed = floor(count($medias)/5);
+// dd($request->get('pageMed'));
+        if(null != $request->get('pageMed')){
+            $oldPageMed = $request->get('pageMed');
+
+            if($request->get('turn') == 'next'){
+                $pageMed = $oldPageMed + 1;
+            }elseif($request->get('turn') == 'previous'){
+                $pageMed = $oldPageMed-1;
+            }
+            
+            $offset = $pageMed*5;
+            $mediasToUse = array_slice($medias, $offset, 5);
+        }else{
+            $mediasToUse = array_slice($medias, 0, 5);
+            $pageMed = 1;
+        }
 
         $comment = new Comment();
         
@@ -211,6 +235,9 @@ class TrickController extends AbstractController
                 'anonymous' => $anonymous,
                 'page' => $pageCom,
                 'totalPage' => $totalPage,
+                'totalPageMed' => $totalPageMed,
+                'pageMed' => $pageMed,
+                'medias'=>$mediasToUse,
             ]);  
 
         }else{
@@ -223,6 +250,9 @@ class TrickController extends AbstractController
                 'form' => $form->createView(),
                 'title' => $title,
                 'anonymous' => $anonymous,
+                'totalPageMed' => $totalPageMed,
+                'pageMed' => $pageMed,
+                'medias'=>$mediasToUse,
             ]);  
         }
     }

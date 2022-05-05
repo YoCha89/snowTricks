@@ -6,7 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Form\MediaType;
+use App\Form\ImgType;
+use App\Form\VidType;
 use App\Form\MediaUpType;
 use App\Entity\Media;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,39 +40,97 @@ class MediaController extends AbstractController
     }
 
     /**
-     * @Route("/create_media", name="create_media")
+     * @Route("/create_video", name="create_video")
      */
-    public function createMediaAction(Request $request): Response {
+    public function createVideoAction(Request $request): Response {
         $media = new Media();
-        $form = $this->createForm(MediaType::class);
+
+        $title = 'Ajouter une image';
+        $form = $this->createForm(VidType::class);
+        
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
             $title = $form['title']->getData().'.jpg';
             $mediaCheck = $em->getRepository(Media::class)->findOneBy(array('title' => $title));
 
             if($mediaCheck == null){
+                
+                $path = $form['mediaPath']->getData();
+                
+                if (!preg_match('https://www.youtube.com/embed', $path)) {
+                    $raw = preg_split('/', $path);
+                    $code = end($raw);
+                    $path = 'https://www.youtube.com/embed' . $code;
+                }
+
+                $media->setType('vid');
+
+                $em->persist($media);
+                $em->flush();
+
+            }else{
+                $this->addFlash('error', 'Ce nom d\'image est déja utilisé. Utiliser un nouveau nom de pour cette image.');
+            }
+
+            return $this->redirect($this->generateUrl('create_video'));
+        }
+
+        return $this->render('media/create_media.html.twig', [
+            'form' => $form->createView(),
+            'media' => $media,
+            'title' => $title
+        ]);
+    }
+
+    /**
+     * @Route("/create_image", name="create_image")
+     */
+    public function createImageAction(Request $request): Response {
+        $media = new Media();
+
+        $title = 'Ajouter une image';
+        $form = $this->createForm(ImgType::class);
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $title = $form['title']->getData().'.jpg';
+            $mediaCheck = $em->getRepository(Media::class)->findOneBy(array('title' => $title));
+
+            if($mediaCheck == null){
+                $trick = $form['trick']->getData();
+
                 $directory = 'images\profile_pic';
                 $path = $directory.'/'.$title;
                 $file = $form['mediaPath']->getData();
                 $file->move($directory, $title);
                 
                 $media->setTitle($title);
+                $media->setTrick($trick);
                 $media->setMediaPath($path);
+
+                $imgPCheck = $em->getRepository(Media::class)->findOneBy(array('trick'=>$trick, 'type'=>'imgP'));
+
+                if($imgPCheck == null){
+                    $media->setType('imgP');
+                }else{
+                    $media->setType('img');
+                }
 
                 $em->persist($media);
                 $em->flush();
+
             }else{
                 $this->addFlash('error', 'Ce nom d\'image est déja utilisé. Utiliser un nouveau nom de pour cette image.');
             }
 
-            return $this->redirect($this->generateUrl('create_media'));
+            return $this->redirect($this->generateUrl('create_image'));
         }
-
-        $title = 'Ajouter un media';
 
         return $this->render('media/create_media.html.twig', [
             'form' => $form->createView(),
@@ -150,6 +209,16 @@ class MediaController extends AbstractController
 
         return $this->render('media/display_media.html.twig', [
             'media' => $media,
+            'title' => $title,
+        ]);
+    }
+
+    /**
+        * @Route("/test_video", name="test_video")
+        */
+    public function TestVideoAction(Request $request): Response {
+        $title = "test";
+        return $this->render('media/test_video.html.twig', [
             'title' => $title,
         ]);
     }

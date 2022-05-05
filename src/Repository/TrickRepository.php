@@ -28,6 +28,15 @@ class TrickRepository extends ServiceEntityRepository
         ;
     }
 
+    public function checkImgP()
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /*
     public function findOneBySomeField($value): ?Trick
     {

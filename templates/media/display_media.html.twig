@@ -5,8 +5,14 @@
 
 {% block body %}
 
-<div class="dispImg">
-    <img src="{{ asset(media.mediaPath) }}">
-</div>
+{% if media.type == 'img' or media.type == 'imgP' %}
+    <div class="dispImg">
+        <img src="{{ asset(media.mediaPath) }}">
+    </div>
+{% else %}
+    <div class="dispImg">
+        <iframe width="560" height="315" src="{{ asset(media.mediaPath) }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+{% endif %}
 
 {% endblock %}

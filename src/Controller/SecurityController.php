@@ -28,9 +28,6 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -38,21 +35,6 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
-    }
-
-    //checks if a user has verified his email when registering before connecting him
-    /**
-     * @Route("/checkIsVerified", name="checkIsVerified")
-     */
-    public function checkIsVerified() {
-        if($this->getUser() != null){
-            if($this->getUser()->getIsVerified() != false){
-                return new RedirectResponse('/');
-            }else{
-                $this->addFlash('error', 'Veuillez confirmer la création de votre compte en cliquant sur le lien qui vous a été envoyé par email.');
-                return new RedirectResponse('/logout');
-            }
-        }
     }
 
 
@@ -216,7 +198,7 @@ class SecurityController extends AbstractController
     protected function newPassEmail($mailer, $email, $fullName){
 
         $mailToSend = (new TemplatedEmail())
-            ->from(new Address('yoachar89@gmail.com', 'systemMail'))
+            ->from(new Address($this->getParameter('app.mailadmin'), 'systemMail'))
             ->to($email)
             ->subject('Confirmation Email')
             ->htmlTemplate('security/ask_pass_email.html.twig')
