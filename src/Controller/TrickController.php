@@ -6,10 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\TrickUpType;
 use App\Form\TrickType;
 use App\Form\ThumbnailType;
 use App\Form\CommentType;
 use App\Entity\Trick;
+use App\Entity\Media;
 use App\Entity\Thumb;
 use App\Entity\Thumbnail;
 use App\Entity\Comment;
@@ -18,18 +20,26 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Repository\TrickRepository;
+use App\Repository\CommentRepository;
+use  Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class TrickController extends AbstractController
 {
     /**
      * @Route("/", name="index")
      */
-    public function index(Request $request, $origin = null): Response
+    public function index(Request $request, TrickRepository $trickRepository): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $tricks = $em->getRepository(Trick::class)->findByOrder();
+        $tricks = $trickRepository->findByOrder();
         
-        $totalPage = floor(count($tricks)/20);
+        $totalPageRaw = count($tricks)/20;
+        if(is_int($totalPageRaw)){
+            $totalPage = $totalPageRaw-1;
+        }else{
+            $totalPage = floor($totalPageRaw);
+        }
 
         if(null != $request->get('page')){
             $oldPage = $request->get('page');
@@ -61,27 +71,50 @@ class TrickController extends AbstractController
     /**
      * @Route("/create_trick", name="create_trick")
      */
-    public function createTrickAction(Request $request): Response {
+    public function createTrickAction(Request $request, SluggerInterface $slugger, TrickRepository $trickRepository): Response {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $em = $this->getDoctrine()->getManager();
+            $title = $form->get('mediaTitle')->getData();
+            $titlePath = $title.'.jpg';
 
-            $check = $em->getRepository(Trick::class)->findBy(array('name'=>$trick->getName()));
+            $check = $trickRepository->findBy(array('name'=>$trick->getName()));
+            $imgCheck = $em->getRepository(Media::class)->findOneBy(array('trick'=>$trick, 'type'=>'imgP'));
+
+            $directory = $this->getParameter('upload_dir_trick');
+            $path = $directory.'/'.$title.'.jpg';
+            $file = $form->get('medias')->getData();
+            $file->move($directory, $title); 
+            $pathRaw = explode('images', $path); 
+            $path = 'images'.$pathRaw[1];
+
+            $media = new Media();
+            $media->setTitle($title);
+            $media->setTrick($trick);
+            $media->setMediaPath($path);
+            $media->setMediaPath($path);
+
+            if($imgCheck == null){
+                $media->setType('imgP');
+            }else{
+                $media->setType('img');
+            }
 
             if($check == null){
+                
 
-                $slug = 'snow_trick_'.$trick->getName();
-                $trick->setSlug($slug);
+                $trick->setSlug($slugger->slug($trick->getName()));
                 $trick->setCreatedAt(new \DateTime());
 
                 $em->persist($trick);
+                $em->persist($media);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('index')); 
+                return $this->redirectToRoute('index');                 
                 
             }else{
                 $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure.');
@@ -101,27 +134,26 @@ class TrickController extends AbstractController
     /**
      * @Route("/update_trick/{slug}", name="update_trick")
      */
-    public function updateTrickAction(Request $request, Trick $trick): Response {
+    public function updateTrickAction(Request $request, Trick $trick, SluggerInterface $slugger, TrickRepository $trickRepository): Response {
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(TrickUpType::class, $trick);
         $form->handleRequest($request);
 
        if ($form->isSubmitted() && $form->isValid()) {
 
             $em = $this->getDoctrine()->getManager();
 
-            $check = $em->getRepository(Trick::class)->findBy(array('name'=>$trick->getName()));
+            $check = $trickRepository->findBy(array('name'=>$trick->getName()));
 
             if($check == null){
 
-                $slug = 'snow_trick_'.$trick->getName();
-                $trick->setSlug($slug);
+                $trick->setSlug($slugger->slug($trick->getName()));
                 $trick->setUpdatedAt(new \DateTime());
 
                 $em->persist($trick);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('index')); 
+                return $this->redirectToRoute('index'); 
                 
             }else{
                 $this->addFlash('error', 'Ce nom de figure est déja utilisé. Utiliser un nouveau nom de figure.');
@@ -141,19 +173,23 @@ class TrickController extends AbstractController
     /**
      * @Route("/show_trick/{slug}", name="show_trick")
      */
-    public function showTrickAction(Request $request, Trick $trick): Response{
-
-        $em = $this->getDoctrine()->getManager();
+    public function showTrickAction(Request $request, Trick $trick, CommentRepository $commentRepository): Response{
 
         $mediasRaw = $trick->getMedias();
         $medias = [];
+        $em = $this->getDoctrine()->getManager();
 
         foreach($mediasRaw as $med){
             array_push($medias, $med);
         }
 
-        $totalPageMed = floor(count($medias)/5);
-// dd($request->get('pageMed'));
+        $totalPageMedRaw = count($medias)/5;
+        if(is_int($totalPageMedRaw)){
+            $totalPageMed = $totalPageMedRaw-1;
+        }else{
+            $totalPageMed = floor($totalPageMedRaw);
+        }
+        
         if(null != $request->get('pageMed')){
             $oldPageMed = $request->get('pageMed');
 
@@ -179,7 +215,7 @@ class TrickController extends AbstractController
         $reply = false;
 
         if($parent != null){
-            $commentParent = $em->getRepository(Comment::class)->findOneBy(array('id'=>$parent));
+            $commentParent = $commentRepository->findOneBy(array('id'=>$parent));
             $lvl = $commentParent->getLvl() + 1;
             $comment->setCommentParent($commentParent);
             $comment->setLvl($lvl);
@@ -203,9 +239,14 @@ class TrickController extends AbstractController
         }
 
         if($reply == false){
-            $comments = $em->getRepository(Comment::class)->findByOrder($trick->getId());
+            $comments = $commentRepository->findByOrder($trick->getId());
 
-            $totalPage = floor(count($comments)/10);
+            $totalPageRaw = count($comments)/10;
+            if(is_int($totalPageRaw)){
+                $totalPage = $totalPageRaw-1;
+            }else{
+                $totalPage = floor($totalPageRaw);
+            }
 
             if(null != $request->get('page')){
                 $oldPageCom = $request->get('page');
@@ -295,10 +336,11 @@ class TrickController extends AbstractController
     /**
      * @Route("/define_thumbnail/{slug}", name="define_thumbnail")
      */
-    public function defineThumbnailAction(Request $request, Trick $trick): Response {
+    public function defineThumbnailAction(Request $request, Trick $trick, MediaRepository $mediaRepository): Response {
 
         $mediasRaw = $trick->getMedias();
         $medias = [];
+        $em = $this->getDoctrine()->getManager();
 
         $mediaP = null;
 
@@ -340,7 +382,7 @@ class TrickController extends AbstractController
             }elseif($check > 1){
                 $this->addFlash('error', 'Vous ne pouvez définir plusieurs images en tant que thumbnail de la figure. Veuillez n\'en sélectionner qu\'une.');
             }else{
-                $newImgP = $em->getRepository(Media::class)->findOneBy(array('title'=>$choice[0]));
+                $newImgP = $mediaRepository->findOneBy(array('title'=>$choice[0]));
                 $old = $trick->getMedias();
                 foreach($old as $tmp){
                     if($tmp->getType() == 'imgP'){

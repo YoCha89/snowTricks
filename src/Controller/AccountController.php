@@ -18,7 +18,7 @@ class AccountController extends AbstractController
      */
     public function updateAccountAction(Request $request): Response {
 
-        return $this->redirect($this->generateUrl('index')); 
+        return $this->redirectToRoute('index');  
     }
 
     /**
@@ -60,7 +60,7 @@ class AccountController extends AbstractController
             $em->remove($user);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('index'));             
+            return $this->redirectToRoute('index');             
         }else{
             $title = 'Confirmation de suppression';
             return $this->render('account/deletion_check.html.twig', [

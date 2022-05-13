@@ -43,34 +43,42 @@
 
       {% if trick.medias[0] is defined %} 
         <div class="imgSec">
-          {% if pageMed != 1 %} 
-            <div class="turn">
-              <form method="post" action="{{ path('show_trick', {'slug': trick.slug,'trick':trick, 'pageMed': pageMed}) }}">
-                <input id="pageMed" name="pageMed" type="hidden" value=" {{pageMed}} ">
-                <input id="turn" name="turn" type="hidden" value="previous">
-                <button class="btn_pageMed" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/previous.png') }}" alt="previous" style ="max-width: 45px;"></button>
-              </form>
-            </div>
-          {% endif %}
 
           <div id='paginationMed'>
             {% for media in medias %} 
+              {% if media.type == 'img' or media.type == 'imgP' %}
                 <a class="pageMed-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
+              {% elseif media.type == 'vid' %}
+                <a class="pageMed-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset('images/vid.png') }}" style = "max-width: 150px;"></a>
+              {% endif %}
             {% endfor %}
-            <div id="currPageMed">
-              {{pageMed}}/{{totalPageMed}}
-            </div>
-          </div>
 
-          {% if pageMed != totalPageMed %} 
-            <div class="turn">  
-              <form method="post" action="{{ path('show_trick', {'slug': trick.slug,'trick':trick, 'pageMed': pageMed}) }}">
-                <input id="pageMed" name="pageMed" type="hidden" value=" {{pageMed}} ">
-                <input id="turn" name="turn" type="hidden" value="next">
-                <button class="btn_pageMed" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/next.png') }}" alt="next" style ="max-width: 45px;"></button>
-              </form>
-            </div>
-          {% endif %}
+          <div class="pagination">
+            {% if pageMed != 1 %} 
+              <div class="turn">
+                <form method="post" action="{{ path('show_trick', {'slug': trick.slug,'trick':trick, 'pageMed': pageMed}) }}">
+                  <input id="pageMed" name="pageMed" type="hidden" value=" {{pageMed}} ">
+                  <input id="turn" name="turn" type="hidden" value="previous">
+                  <button class="btn_pageMed" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/previous.png') }}" alt="previous" style ="max-width: 45px;"></button>
+                </form>
+              </div>
+            {% endif %}            
+            <div id="currPageMed">
+                {{pageMed}}/{{totalPageMed}}
+              </div>
+            
+            {% if pageMed != totalPageMed %} 
+              <div class="turn">  
+                <form method="post" action="{{ path('show_trick', {'slug': trick.slug,'trick':trick, 'pageMed': pageMed}) }}">
+                  <input id="pageMed" name="pageMed" type="hidden" value=" {{pageMed}} ">
+                  <input id="turn" name="turn" type="hidden" value="next">
+                  <button class="btn_pageMed" style="background-color:#2c3e50;"><img class="latArrow" src="{{ asset('images/next.png') }}" alt="next" style ="max-width: 45px;"></button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+          
+          </div>
         </div>
       {% endif %}
 

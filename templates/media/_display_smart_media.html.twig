@@ -1,7 +1,11 @@
 {% set count = medias|length-1 %}
 
 {% for key, media in medias %} 
-    <a class="page-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
+  {% if media.type == 'img' or media.type == 'imgP' %}
+    <a class="pageMed-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset(media.mediaPath) }}" style = "max-width: 150px;"></a>
+  {% elseif media.type == 'vid' %}
+    <a class="pageMed-link" href="{{ path('display_media', {id:media.id}) }}" target="_blank"><img src="{{ asset('images/vid.png') }}" style = "max-width: 150px;"></a>
+  {% endif %}
 
     {% if key != count %}
       <hr style="color: #2c3e50; border:solid 0.2px; margin: 2px;">

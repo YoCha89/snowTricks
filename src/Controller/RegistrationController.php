@@ -42,9 +42,11 @@ class RegistrationController extends AbstractController
                     )
                 );
 
-                $directory = 'images\profile_pic';
+                $directory = $this->getParameter('upload_dir_profile');
                 $picTitle = str_replace(' ', '_', $user->getFullName()).'.jpg';
-                $path = $directory.'/'.$picTitle;
+                $pathI = $directory.'/'.$picTitle; 
+                $pathRaw = explode('images', $pathI); 
+                $path = 'images'.$pathRaw[1];
                 $file = $form['profilePic']->getData();
                 $file->move($directory, $picTitle);
 
@@ -59,9 +61,9 @@ class RegistrationController extends AbstractController
                 $email = $user->getEmail();
 
                 $this->verifyEmail($mailer, $email, $fullName);
-                $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compote');
+                $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compte');
 
-                return $this->redirect($this->generateUrl('index')); 
+                return $this->redirectToRoute('index'); 
 
             }else{
                 $this->addFlash('error', 'Ce nom d\'utilisateur est déja utilisé. Utiliser un autre pseudo');

@@ -88,7 +88,6 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         if($user->getIsVerified() != false){
             return true;
         }else{
-            $request->getSession()->invalidate();
             $request->getSession()->set('error', 'Veuillez confirmer la création de votre compte en cliquant sur le lien qui vous a été envoyé par email.');
             return new RedirectResponse('/');
         }

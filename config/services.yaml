@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    upload_dir_profile: '%kernel.project_dir%/public/images/profile_pic'
+    upload_dir_trick: '%kernel.project_dir%/public/images/trick_pic'
     app.mailadmin: '%env(MAIL_ADMIN)%'
 
 services:
@@ -12,6 +14,7 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+            
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -22,5 +25,8 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
+    App\EventListener\LogoutListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.logout }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
