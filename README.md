@@ -25,17 +25,7 @@ Installing the app :<br/>
     <li>Create a database named : snowtricks</li>
     <li>Execute the sql file included with the project file </li>
     <li>To make the mailer work, register for free in MailTrap. An app that will capture our mail but work like a mailbox, allowing the test of mailer related action within the app </li>
-    <li>Two function requires a working email system :</li>
-        <ol>             
-            <li>
-                 1. verifyEmail : which allow the confirmation of a register and the assurance the mail given is an effective one<hr/>
-                 In  src>controller>RegistrationController, you'll find the protected function verifyEmail(). Put the mail adress you will use to send email in the following code line : ->from(new Address('YOUR_ADRESS', 'systemMail'))
-            </li>       
-            <li>
-                 2. newPassEmail : to use the user access to his own email as a safety check to update the app password.<hr/>
-                 In  src>controller>SecurityController, you'll find the protected function newPassEmail. Put the mail adress you will use to send email in the following code line : ->from(new Address('YOUR_ADRESS', 'systemMail'))
-            </li>  
-        </ol>
+    <li>Setup your email address in .env with the correct parameter name : MAIL_ADMIN=your_address</li>
     <li>You can create a user account through the App interface.</li>
     <li>To check the app functionnement with admin right, connect with the test admin account :</li>
         ◦ Pseudo : admin@gmail.com

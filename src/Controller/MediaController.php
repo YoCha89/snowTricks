@@ -59,14 +59,17 @@ class MediaController extends AbstractController
             if($mediaCheck == null){
                 
                 $path = $form['mediaPath']->getData();
+                $trick = $form['trick']->getData();
                 
-                if (!preg_match('https://www.youtube.com/embed', $path)) {
-                    $raw = preg_split('/', $path);
+                if (!preg_match('/embed/', $path)) {
+                    $raw = preg_split('/\//', $path);
                     $code = end($raw);
-                    $path = 'https://www.youtube.com/embed' . $code;
+                    $path = 'https://www.youtube.com/embed/' . $code;
                 }
 
                 $media->setType('vid');
+                $media->setTrick($trick);
+                $media->setMediaPath($path);
 
                 $em->persist($media);
                 $em->flush();
@@ -75,7 +78,7 @@ class MediaController extends AbstractController
                 $this->addFlash('error', 'Ce nom d\'image est déja utilisé. Utiliser un nouveau nom de pour cette image.');
             }
 
-            return $this->redirect($this->generateUrl('create_video'));
+            return $this->redirectToRoute('create_video'); 
         }
 
         return $this->render('media/create_media.html.twig', [
@@ -105,7 +108,7 @@ class MediaController extends AbstractController
             if($mediaCheck == null){
                 $trick = $form['trick']->getData();
 
-                $directory = 'images\profile_pic';
+                /*$directory = $this->getParameter('upload_dir_trick');
                 $path = $directory.'/'.$title;
                 $file = $form['mediaPath']->getData();
                 $file->move($directory, $title);
@@ -120,7 +123,7 @@ class MediaController extends AbstractController
                     $media->setType('imgP');
                 }else{
                     $media->setType('img');
-                }
+                }*/
 
                 $em->persist($media);
                 $em->flush();
@@ -129,7 +132,7 @@ class MediaController extends AbstractController
                 $this->addFlash('error', 'Ce nom d\'image est déja utilisé. Utiliser un nouveau nom de pour cette image.');
             }
 
-            return $this->redirect($this->generateUrl('create_image'));
+            return $this->redirectToRoute('create_image');
         }
 
         return $this->render('media/create_media.html.twig', [
@@ -172,7 +175,7 @@ class MediaController extends AbstractController
                 $em->persist($media);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manage_media'));
+                return $this->redirectToRoute('manage_media');
             }
 
         $title = 'Modifer un media';
@@ -195,7 +198,8 @@ class MediaController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->remove($media);
         $em->flush();
-        return new RedirectResponse('/manage_media');
+        
+        return $this->redirectToRoute('manage_media');
 
     }
 

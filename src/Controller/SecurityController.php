@@ -57,7 +57,7 @@ class SecurityController extends AbstractController
             $request
         );
 
-        return new RedirectResponse('/');
+        return $this->redirectToRoute('index');
     }
 
     /**
@@ -82,10 +82,10 @@ class SecurityController extends AbstractController
 
                 $this->newPassEmail($mailer, $email, $fullName);
                 $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compte');
-                return $this->redirect($this->generateUrl('index')); 
+                return $this->redirectToRoute('manage_media');
             }else{
                 $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom');  
-                return $this->redirect($this->generateUrl('/')); 
+                return $this->redirectToRoute('manage_media'); 
             }
         }
 
@@ -164,14 +164,15 @@ class SecurityController extends AbstractController
                     $em->flush();    
 
                     $this->addFlash('success', 'Votre mot de pass a été mis à jour.');
-                    return $this->redirect($this->generateUrl('index')); 
+                    return $this->redirectToRoute('manage_media'); 
                 }else{
                     $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom.');  
-                    return $this->redirect($this->generateUrl('index')); 
+                    return $this->redirectToRoute('manage_media'); 
                 }
             }else{
                 $this->addFlash('error', 'Vous avez utilisé 2 mots de passe différents.');  
-                return $this->redirect($this->generateUrl('reset_pass')); 
+                
+                return $this->redirectToRoute('reset_pass');
             }
 
 

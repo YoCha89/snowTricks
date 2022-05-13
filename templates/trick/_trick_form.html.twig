@@ -12,9 +12,14 @@
             {{ form_row(form.content) }}
         </div><br/>
 
-        <div class="smartField">
-            {{ form_row(form.medias) }}
-        </div><br/>
+        {% if update is not defined %} 
+            <div class="smartField">
+                {{ form_row(form.mediaTitle) }}
+            </div><br/>
+            <div class="smartFieldUpload">
+                {{ form_row(form.medias) }}
+            </div><br/>
+        {% endif %}
 
         <div class="smartField">
             {{ form_row(form.category) }}
