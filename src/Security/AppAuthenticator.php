@@ -37,26 +37,6 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         $email = $request->request->get('email', '');
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
-        if($email != null){
-            $user = $this->accountRepository->findOneBy(array('email'=>$email));
-            if($user != null){
-                $check = $this->checkIsVerified($request, $user);
-                if($check==true){        
-                    return new Passport(
-                        new UserBadge($email),
-                        new PasswordCredentials($request->request->get('password', '')),
-                        [
-                            new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-                        ]
-                    );
-                }
-                //only authorizes a passport as a return 
-                /*else{
-
-                    return new RedirectResponse('/');
-                }  */         
-            }
-        }
         
         return new Passport(
             new UserBadge($email),
@@ -80,16 +60,5 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
-    }
-
-    //checks if a user has verified his email when registering before connecting him
-    public function checkIsVerified($request, $user) {
-
-        if($user->getIsVerified() != false){
-            return true;
-        }else{
-            $request->getSession()->set('error', 'Veuillez confirmer la création de votre compte en cliquant sur le lien qui vous a été envoyé par email.');
-            return new RedirectResponse('/');
-        }
     }
 }
