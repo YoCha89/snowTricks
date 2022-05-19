@@ -34,12 +34,7 @@ class TrickController extends AbstractController
     {
         $tricks = $trickRepository->findByOrder();
         
-        $totalPageRaw = count($tricks)/20;
-        if(is_int($totalPageRaw)){
-            $totalPage = $totalPageRaw-1;
-        }else{
-            $totalPage = floor($totalPageRaw);
-        }
+        $totalPage = ceil(count($tricks)/20);
 
         if(null != $request->get('page')){
             $oldPage = $request->get('page');
@@ -50,8 +45,9 @@ class TrickController extends AbstractController
                 $page = $oldPage-1;
             }
             
-            $offset = $page*20;
+            $offset = ($page-1)*20;
             $tricksToUse = array_slice($tricks, $offset, 20);
+            // dd($tricks, $tricksToUse, $offset);
         }else{
             $tricksToUse = array_slice($tricks, 0, 20);
             $page = 1;
@@ -88,14 +84,14 @@ class TrickController extends AbstractController
             $directory = $this->getParameter('upload_dir_trick');
             $path = $directory.'/'.$title.'.jpg';
             $file = $form->get('medias')->getData();
-            $file->move($directory, $title); 
+            $file->move($directory, $titlePath); 
             $pathRaw = explode('images', $path); 
             $path = 'images'.$pathRaw[1];
+            // dd($path);
 
             $media = new Media();
-            $media->setTitle($title);
+            $media->setTitle($titlePath);
             $media->setTrick($trick);
-            $media->setMediaPath($path);
             $media->setMediaPath($path);
 
             if($imgCheck == null){
@@ -162,10 +158,12 @@ class TrickController extends AbstractController
         }
 
         $titleForm = 'Modifier une figure';
+        $update = 'update';
 
         return $this->render('trick/update_trick.html.twig', [
             'form' => $form->createView(),
             'trick' => $trick,
+            'update' => $update,
             'titleForm' =>$titleForm,
         ]);
     }
@@ -183,12 +181,7 @@ class TrickController extends AbstractController
             array_push($medias, $med);
         }
 
-        $totalPageMedRaw = count($medias)/5;
-        if(is_int($totalPageMedRaw)){
-            $totalPageMed = $totalPageMedRaw-1;
-        }else{
-            $totalPageMed = floor($totalPageMedRaw);
-        }
+        $totalPageMed = count($medias)/5;
         
         if(null != $request->get('pageMed')){
             $oldPageMed = $request->get('pageMed');
@@ -197,9 +190,11 @@ class TrickController extends AbstractController
                 $pageMed = $oldPageMed + 1;
             }elseif($request->get('turn') == 'previous'){
                 $pageMed = $oldPageMed-1;
+            }else{
+                $pageMed = $oldPageMed;
             }
             
-            $offset = $pageMed*5;
+            $offset = ($pageMed-1)*5;
             $mediasToUse = array_slice($medias, $offset, 5);
         }else{
             $mediasToUse = array_slice($medias, 0, 5);
@@ -241,12 +236,7 @@ class TrickController extends AbstractController
         if($reply == false){
             $comments = $commentRepository->findByOrder($trick->getId());
 
-            $totalPageRaw = count($comments)/10;
-            if(is_int($totalPageRaw)){
-                $totalPage = $totalPageRaw-1;
-            }else{
-                $totalPage = floor($totalPageRaw);
-            }
+            $totalPage = count($comments)/10;
 
             if(null != $request->get('page')){
                 $oldPageCom = $request->get('page');
@@ -257,7 +247,7 @@ class TrickController extends AbstractController
                     $pageCom = $oldPageCom - 1;
                 }
                 
-                $offset = $pageCom*10;
+                $offset = ($pageCom-1)*10;
                 $commentsToUse = array_slice($comments, $offset, 10);
             }else{
                 $commentsToUse = array_slice($comments, 0, 10);
@@ -306,6 +296,13 @@ class TrickController extends AbstractController
 
         if($request->get('checkDone') != null){
             $comments = $trick->getComments();
+            $medias = $trick->getMedias();
+
+            foreach($medias as $med){
+                $trick->removeMedia($med);
+            }
+
+            $em->persist($trick);
 
             foreach($comments as $com){
                 $comChild = $com->getComments();

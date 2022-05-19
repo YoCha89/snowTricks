@@ -7034,10 +7034,34 @@ h1{
   color: #2c3e50;
 }
 
+.dispImg{
+  display: none;
+}
+
+.imgUpT{
+  display: none;
+}
+
+.managM{
+  display: none;
+}
+
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*/
 @media all and (min-width: 768px) {
+
+.managMSmart{
+  display: none;
+}
+
+.imgUpTSmart{
+  display: none;
+}
+
+.dispImgSmart{
+  display: none;
+}
 
 .addMedia{
   display: none;

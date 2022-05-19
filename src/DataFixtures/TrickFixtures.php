@@ -15,23 +15,17 @@ class TrickFixtures extends Fixture {
 
 		$faker = Factory::create('fr_FR');
 
-		$str = 'azertyuiopqsdfghjklmwxcvbn0123456789';
-		$num = '01234567890123456789';
-
+		$str = 'azertyuiopqsdfghjklmwxcvbn';
 
 		for ($count = 0; $count < 50; $count++) {
 
 			$schufS = str_shuffle($str);
-			$schufS2 = str_shuffle($str);
-			$schufI = str_shuffle($num);
 
 			$date = $faker->dateTime($format = 'Y-m-d H:i', $timezone = null);
 
-			$name1 = substr($schufS, 0, 5);
-			$name2 = substr($schufS2, 0, 5);
-			$name = $name1.' '.$name2;
-			$content = $faker->paragraph($nbSentences = 3, $variableNbSentences = true);
-			$slug = '/'.$name1.'_'.$name2;
+			$name = ucfirst(substr($schufS, 0, 5)).'_'.ucfirst(substr($schufS, 6, 4));
+			$content = $faker->paragraph($nbSentences = 2, $variableNbSentences = true);
+			$slug = $name .'_trick';
 
 			$trick = new Trick();
 
@@ -40,10 +34,11 @@ class TrickFixtures extends Fixture {
 			$trick->setSlug($slug);
 			$trick->setCreatedAt($date);
 
+			$this->setReference(self::TRICK_REFERENCE.'_'.$count, $trick);
+
 			$manager->persist($trick);
 			$manager->flush();
 		}
 
-		$this->addReference(self::TRICK_REFERENCE, $trick);
 	}
 }

@@ -9,9 +9,15 @@
     <div class="dispImg">
         <img src="{{ asset(media.mediaPath) }}">
     </div>
+    <div class="dispImgSmart">
+        <img src="{{ asset(media.mediaPath) }}" style="max-width:260px; margin:auto;">
+    </div>
 {% else %}
     <div class="dispImg">
         <iframe width="560" height="315" src="{{ asset(media.mediaPath) }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="dispImgSmart">
+        <iframe width="260" height="146" src="{{ asset(media.mediaPath) }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
 {% endif %}
 

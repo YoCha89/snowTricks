@@ -3,13 +3,14 @@
 namespace App\Form;
 
 use App\Entity\Trick;
-use App\Entity\media;use App\Entity\Category;
+use App\Entity\media;
+use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Doctrine\DBAL\Types\StringType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TrickType extends AbstractType
 {
@@ -18,7 +19,7 @@ class TrickType extends AbstractType
 
         $builder
             ->add('name')
-            ->add('content')
+            ->add('content', TextareaType::class)
             ->add('mediaTitle', null,[
                 'label' => 'Titre de l\'image',
                 'mapped' => false,

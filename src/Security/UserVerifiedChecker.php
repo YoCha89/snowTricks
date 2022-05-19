@@ -14,6 +14,10 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 	    	$this->checkIsVerified($user);
 	    }
 
+	    public function checkPostAuth(UserInterface $user){
+	    	return;
+	    }
+
 	    private function checkIsVerified(UserInterface $user){
 	    	
 			if($user->getIsVerified()){

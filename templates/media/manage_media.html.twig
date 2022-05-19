@@ -8,6 +8,7 @@
 
 <div id="mediaTab">
 
+<div class="managM">
 <table class="table table-hover">
   <thead>
     <tr>
@@ -40,29 +41,42 @@
           </td>
         </tr>
 
-      {% elseif media.type == 'vid' %} 
-
-        <tr class="table-secondary">
-          <th scope="row"><img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 190px;"></th>
-          <td> {{ media.title }} </td>
-          {% if media.trick is not null%} 
-            <td> {{ media.trick.name }} </td>
-          {% else %} 
-            <td> Pas de trick associé </td>
-          {% endif %}
-          
-          <td> {{ media.type }} </td>
-          <td> 
-            <a href="{{ path('update_media', {id: media.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
-            <a href="{{ path('delete_media', {id: media.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a> 
-          </td>
-        </tr>
-
       {% endif %}
 
     {% endfor %}
   </tbody>
 </table>
+</div>
+
+<div class="managMSmart">
+  <table class="table table-hover">
+
+    <thead>
+    <tr>
+    <th scope="col"></th>
+    <th scope="col">Action</th>
+    </tr>
+    </thead>
+
+    <tbody>  
+    {% for media in medias %}
+
+    {% if (media.type == 'img') or (media.type == 'imgP')  %}
+    <tr class="table-secondary">
+      <th scope="row"><img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 190px;"></th>
+      <td> 
+        <a href="{{ path('update_media', {id: media.id}) }}"><img src="{{ asset('images/edit.png') }}" alt="Edit" style="max-width: 2.8rem; height: auto; padding: 1px; margin: 3px;"/></a>
+        <a href="{{ path('delete_media', {id: media.id}) }}"><img src="{{ asset('images/delete.png') }}" alt="Delete" style="max-width: 2rem; height: auto; padding: 1px; margin: 3px;"/></a> 
+      </td>
+    </tr>
+    {% endif %}
+
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
 </div>
 
 
