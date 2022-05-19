@@ -68,6 +68,7 @@ class MediaController extends AbstractController
                 }
 
                 $media->setType('vid');
+                $media->setTitle($title);
                 $media->setTrick($trick);
                 $media->setMediaPath($path);
 
@@ -102,17 +103,21 @@ class MediaController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $title = $form['title']->getData().'.jpg';
+            $title = $form['title']->getData();
+            $titlePath = $title.'.jpg';
             $mediaCheck = $em->getRepository(Media::class)->findOneBy(array('title' => $title));
 
             if($mediaCheck == null){
                 $trick = $form['trick']->getData();
 
-                /*$directory = $this->getParameter('upload_dir_trick');
-                $path = $directory.'/'.$title;
+                $directory = $this->getParameter('upload_dir_trick');
+                $path = $directory.'/'.$titlePath;
                 $file = $form['mediaPath']->getData();
-                $file->move($directory, $title);
+                $file->move($directory, $titlePath);
+                $pathRaw = explode('images', $path); 
+                $path = 'images'.$pathRaw[1];
                 
+
                 $media->setTitle($title);
                 $media->setTrick($trick);
                 $media->setMediaPath($path);
@@ -123,7 +128,7 @@ class MediaController extends AbstractController
                     $media->setType('imgP');
                 }else{
                     $media->setType('img');
-                }*/
+                }
 
                 $em->persist($media);
                 $em->flush();
@@ -179,7 +184,7 @@ class MediaController extends AbstractController
             }
 
         $title = 'Modifer un media';
-        $update = true;
+        $update = 'update';
 
         return $this->render('media/update_media.html.twig', [
             'form' => $form->createView(),
@@ -213,16 +218,6 @@ class MediaController extends AbstractController
 
         return $this->render('media/display_media.html.twig', [
             'media' => $media,
-            'title' => $title,
-        ]);
-    }
-
-    /**
-        * @Route("/test_video", name="test_video")
-        */
-    public function TestVideoAction(Request $request): Response {
-        $title = "test";
-        return $this->render('media/test_video.html.twig', [
             'title' => $title,
         ]);
     }

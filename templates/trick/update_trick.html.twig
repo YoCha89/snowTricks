@@ -9,7 +9,12 @@
         <div class="imgprinc">
             {% for img in trick.medias %} 
                 {% if img.type == 'imgP' %}
+                <div class="imgUpT">
                     <img src="{{ asset(img.mediaPath) }}">
+                </div>
+                <div class="imgUpTSmart">
+                    <img src="{{ asset(img.mediaPath) }}" style="max-width:260px;">
+                </div>
                 {% endif %}
             {% endfor %}
         </div>
@@ -34,6 +39,6 @@
     </div>
 
 <form method="post" action="{{ path('delete_trick', {'slug': trick.slug}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-    <button class="btn" style="background-color:#e74c3c; color:white;">Supprimer le trick</button>
+    <button class="btn" style="background-color:#e74c3c; color:white; margin-top:5px;">Supprimer le trick</button>
 </form>
 {% endblock %}

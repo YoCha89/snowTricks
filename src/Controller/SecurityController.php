@@ -82,10 +82,10 @@ class SecurityController extends AbstractController
 
                 $this->newPassEmail($mailer, $email, $fullName);
                 $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compte');
-                return $this->redirectToRoute('manage_media');
+                return $this->redirectToRoute('index');
             }else{
                 $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom');  
-                return $this->redirectToRoute('manage_media'); 
+                return $this->redirectToRoute('index'); 
             }
         }
 
@@ -164,10 +164,10 @@ class SecurityController extends AbstractController
                     $em->flush();    
 
                     $this->addFlash('success', 'Votre mot de pass a été mis à jour.');
-                    return $this->redirectToRoute('manage_media'); 
+                    return $this->redirectToRoute('index'); 
                 }else{
                     $this->addFlash('error', 'Aucun utilisateur inscrit sous ce nom.');  
-                    return $this->redirectToRoute('manage_media'); 
+                    return $this->redirectToRoute('index'); 
                 }
             }else{
                 $this->addFlash('error', 'Vous avez utilisé 2 mots de passe différents.');  
@@ -205,6 +205,7 @@ class SecurityController extends AbstractController
             ->htmlTemplate('security/ask_pass_email.html.twig')
             ->context([
                 'fullName' => $fullName,
+                ''
             ]);;
 
         $mailer->send($mailToSend);

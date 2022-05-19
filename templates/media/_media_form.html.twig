@@ -12,13 +12,14 @@
         <div class="smartFieldUpload">
             {{ form_row(form.mediaPath) }}
         </div><br/>
+        <div class="smartFieldUpload">
+            {{ form_row(form.trick) }}
+        </div><br/>
     {% else %}
         <img class="trick-picture" src="{{ asset(media.mediaPath) }}" alt="{{media.title}}" style ="max-width: 140px;">
+        <p>Image associée à la figure : {{media.trick.name}} </p>
     {% endif %}
 
-    <div class="smartFieldUpload">
-        {{ form_row(form.trick) }}
-    </div><br/>
     </div>
 
         <button type="submit" class="btn" style="background-color:#2c3e50; color:white;">Enregistrer</button>

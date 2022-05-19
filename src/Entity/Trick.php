@@ -26,12 +26,12 @@ class Trick
     private $medias;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", length=255, nullable=true)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="text", nullable=true, unique=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $content;
 

@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Doctrine\DBAL\Types\StringType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TrickUpType extends AbstractType
 {
@@ -18,7 +19,7 @@ class TrickUpType extends AbstractType
 
         $builder
             ->add('name')
-            ->add('content')
+            ->add('content', TextareaType::class)
             ->add('category', EntityType::class, [
             // looks for choices from this entity
             'class' => Category::class,
