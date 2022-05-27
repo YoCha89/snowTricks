@@ -32,34 +32,40 @@ class AccountController extends AbstractController
         if($request->get('checkDone') != null){
             $userComments = $em->getRepository(Comment::class)->findBy(array('account' => $user));
 
-            foreach($userComments as $comment){
-                $lvl = $comment->getLvl();
-
-                if(!isset($lvlMax)){
-                    $lvlMax = $lvl;
-                }else{
-                    if($lvl > $lvlMax){
-                        $lvlMax = $lvl;
-                    }
-                }
-            }
-
-            $finalLvl = 1;
-
-            while($finalLvl <= $lvlMax){
-
+            if(count($userComments) != 0){
                 foreach($userComments as $comment){
-                    if($comment->getLvl() == $lvlMax){
-                        $this->deleteComment($comment);
+                    $lvl = $comment->getLvl();
+
+                    if(!isset($lvlMax)){
+                        $lvlMax = $lvl;
+                    }else{
+                        if($lvl > $lvlMax){
+                            $lvlMax = $lvl;
+                        }
                     }
                 }
 
-                $lvlMax--;
+                $finalLvl = 1;
+
+                while($finalLvl <= $lvlMax){
+
+                    foreach($userComments as $comment){
+                        if($comment->getLvl() == $lvlMax){
+                            $this->deleteComment($comment);
+                        }
+                    }
+
+                    $lvlMax--;
+                }
             }
 
+            $this->container->get('security.token_storage')->setToken(null);
+            
             $em->remove($user);
             $em->flush();
 
+            // $request->getSession()->invalidate();
+            $this->addFlash('success', 'Votre compte utilisateur a bien été supprimé !');
             return $this->redirectToRoute('index');             
         }else{
             $title = 'Confirmation de suppression';

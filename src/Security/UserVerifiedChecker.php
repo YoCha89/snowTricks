@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 	    	return;
 	    }
 
-	    private function checkIsVerified(UserInterface $user){
+	    private function checkIsVerified(Account $user){
 	    	
 			if($user->getIsVerified()){
 	            return;

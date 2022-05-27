@@ -42,13 +42,18 @@ class RegistrationController extends AbstractController
                     )
                 );
 
-                $directory = $this->getParameter('upload_dir_profile');
-                $picTitle = str_replace(' ', '_', $user->getFullName()).'.jpg';
-                $pathI = $directory.'/'.$picTitle; 
-                $pathRaw = explode('images', $pathI); 
-                $path = 'images'.$pathRaw[1];
-                $file = $form['profilePic']->getData();
-                $file->move($directory, $picTitle);
+                if($form['profilePic']->getData() != null){
+                    $directory = $this->getParameter('upload_dir_profile');
+                    $picTitle = str_replace(' ', '_', $user->getFullName()).'.jpg';
+                    $pathI = $directory.'/'.$picTitle; 
+                    $pathRaw = explode('images', $pathI); 
+                    $path = 'images'.$pathRaw[1];
+                    $file = $form['profilePic']->getData();
+                    $file->move($directory, $picTitle);    
+                }else{
+                    $path = 'images\profile_pic\User.png';
+                }
+
 
                 $user->setProfilePic($path);
                 $user->setIsVerified(false);
