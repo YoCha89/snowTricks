@@ -3,7 +3,7 @@ Project Name : SnowTricks <br/>
 The App, SnowTricks, works both as a directory of snowboard tricks and a chat room for snowboard enthusiast. The site allows:<br/>
 
 <ul>
-    <li> The creation/modification of tricks, including images, thumbnails and descriptions</li>
+    <li> The creation/modification of tricks</li>
     <li> The creation/modification/management of user accounts</li>
     <li> The display and participation of discussions on each trick with a comment/reply system</li>
 </ul>

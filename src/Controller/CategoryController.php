@@ -4,9 +4,8 @@ namespace App\Controller;
                      
 use App\Entity\Category;
 use App\Entity\Trick;
-use App\Entity\Thread;
 use App\Entity\Account;
-use App\Entity\Comment;                                                                                  
+use App\Entity\Comment;                                                            
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;

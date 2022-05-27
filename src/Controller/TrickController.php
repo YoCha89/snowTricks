@@ -8,12 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\TrickUpType;
 use App\Form\TrickType;
-use App\Form\ThumbnailType;
 use App\Form\CommentType;
 use App\Entity\Trick;
 use App\Entity\Media;
-use App\Entity\Thumb;
-use App\Entity\Thumbnail;
 use App\Entity\Comment;
 use App\Entity\Account;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -328,81 +325,5 @@ class TrickController extends AbstractController
                 'title' => $title
             ]);  
         }
-    }
-
-    /**
-     * @Route("/define_thumbnail/{slug}", name="define_thumbnail")
-     */
-    public function defineThumbnailAction(Request $request, Trick $trick, MediaRepository $mediaRepository): Response {
-
-        $mediasRaw = $trick->getMedias();
-        $medias = [];
-        $em = $this->getDoctrine()->getManager();
-
-        $mediaP = null;
-
-        $thumbnail = new Thumbnail();
-
-        $i = 0;
-        foreach($mediasRaw as $media){
-            if($media->getType() == 'imgP'){
-               $mediaP = $media;
-            }elseif($media->getType() == 'img'){
-                $thumb = new thumb();
-                $thumb->setName($media->getTitle());
-                $thumb->setChoice(false);
-
-                $thumbnail->addThumb( $thumb);
-
-                array_push($medias, $media);
-            }
-        }
-
-        $form = $this->createForm(ThumbnailType::class, $thumbnail);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()){
-
-            $choiceraw = $form['thumbs']->getData();
-            $choice=[];
-
-            foreach($choiceraw as $cho){
-                if($cho->getChoice() == true){
-                    array_push($choice, $cho->getName());
-                }
-            }
-
-            $check = count($choice);
-
-            if($check == 0){
-                $this->addFlash('error', 'Veuillez sélectionner une image pour définir le thumbnail.');
-            }elseif($check > 1){
-                $this->addFlash('error', 'Vous ne pouvez définir plusieurs images en tant que thumbnail de la figure. Veuillez n\'en sélectionner qu\'une.');
-            }else{
-                $newImgP = $mediaRepository->findOneBy(array('title'=>$choice[0]));
-                $old = $trick->getMedias();
-                foreach($old as $tmp){
-                    if($tmp->getType() == 'imgP'){
-                        $oldImgP = $tmp;
-                    }
-                }
-                $oldImg->setType('img');
-                $newImgP->setType('imgP');
-
-                $em->persist($oldImg);
-                $em->persist($newImgP);
-
-                $em->flush();
-
-                $this->addFlash('error', 'Vous ne pouvez définir plusieurs images en tant que thumbnail de la figure. Veuillez n\'en sélectionner qu\'une.');
-            }
-        }
-
-        return $this->render('trick/define_thumbnail.html.twig', [
-            'form' => $form->createView(),
-            'trick' => $trick,
-            'medias' => $medias,
-            'mediaP' => $mediaP,
-        ]);
     }
 }
