@@ -29,7 +29,7 @@ Installing the app :<br/>
     <li>You can create a user account through the App interface.</li>
     <li>To check the app functionnement with admin right, connect with the test admin account :</li>
         ◦ Pseudo : admin@gmail.com
-        ◦ Pass : 1234
+        ◦ Pass : 123456
 </ol>
 
 © 2022 GitHub, Inc.
