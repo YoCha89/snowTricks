@@ -46,7 +46,7 @@ class CommentController extends AbstractController
    /**
      * @Route("/delete_comment/{id}", name="delete_comment")
      */
-    public function deleteCommentAction(Request $request, Comment $comment): Response
+    public function deleteCommentAction(Comment $comment): Response
     {   
         $em = $this->getDoctrine()->getManager();
         $slug = $comment->getTrick()->getSlug();
