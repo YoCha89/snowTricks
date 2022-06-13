@@ -178,7 +178,7 @@ class TrickController extends AbstractController
             array_push($medias, $med);
         }
 
-        $totalPageMed = count($medias)/5;
+        $totalPageMed = floor(count($medias)/5);
         
         if(null != $request->get('pageMed')){
             $oldPageMed = $request->get('pageMed');

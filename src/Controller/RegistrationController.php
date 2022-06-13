@@ -66,7 +66,7 @@ class RegistrationController extends AbstractController
                 $email = $user->getEmail();
 
                 $this->verifyEmail($mailer, $email, $fullName);
-                $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compte');
+                $this->addFlash('success', 'Un lien pour finaliser votre inscription vous a été envoyé sur l\'adresse mail de votre compte');
 
                 return $this->redirectToRoute('index'); 
 
