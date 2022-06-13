@@ -14,14 +14,6 @@ class AccountController extends AbstractController
 {
 
     /**
-     * @Route("/update_account", name="update_account")
-     */
-    public function updateAccountAction(Request $request): Response {
-
-        return $this->redirectToRoute('index');  
-    }
-
-    /**
      * @Route("/delete_account", name="delete_account")
      */
     public function deleteAccountAction(Request $request): Response {
@@ -79,7 +71,6 @@ class AccountController extends AbstractController
     //delete comments for deleteAccountAction, receiving them in decreasing order of lvl to avoid constraints violation if the user had multiple replies within the same thread.
     protected function deleteComment(Comment $comment) {   
         $em = $this->getDoctrine()->getManager();
-        $id = $comment->getTrick()->getId();
 
         $lvl = $comment->getLvl();
         $comments = $comment->getComments();
@@ -122,7 +113,7 @@ class AccountController extends AbstractController
         foreach ($comments as $com){
             
             $check = count($com->getComments());
-            if ($check != 0) {var_dump('go there');
+            if ($check != 0) {
                 foreach($com->getComments() as $next){
                     array_push($nextBatch, $next);
                 }

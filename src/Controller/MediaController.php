@@ -27,7 +27,7 @@ class MediaController extends AbstractController
     /**
      * @Route("/manage_media", name="manage_media")
      */
-    public function manageMediaAction(Request $request): Response {
+    public function manageMediaAction(): Response {
         $em = $this->getDoctrine()->getManager();
         $medias = $em->getRepository(Media::class)->findAll();
 
@@ -155,14 +155,13 @@ class MediaController extends AbstractController
         $form = $this->createForm(MediaUpType::class, $media);
         $form->handleRequest($request);
 
-        $imgp = $media->getType();
         if($media->getType() == 'imgP'){
             $imgp = true;
         }else{
             $medias = $media->getTrick()->getMedias();
-            foreach($media as $med){
+            foreach($medias as $med){
                 if($med->getType() == 'imgP'){
-                    $imgP = $med->getTitle();
+                    $imgp = $med->getTitle();
                     break;
                 }
             }            
@@ -198,7 +197,7 @@ class MediaController extends AbstractController
     /**
         * @Route("/delete_media/{id}", name="delete_media")
         */
-    public function deleteMediaAction(Request $request, Media $media): Response {
+    public function deleteMediaAction(Media $media): Response {
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($media);
@@ -212,7 +211,7 @@ class MediaController extends AbstractController
     /**
         * @Route("/display_media/{id}", name="display_media")
         */
-    public function displayMediaAction(Request $request, Media $media): Response {
+    public function displayMediaAction(Media $media): Response {
 
         $title = $media->getTitle();
 
