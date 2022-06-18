@@ -23,7 +23,9 @@ Installing the app :<br/>
     <li>Download the code files in your projects folder</li>
     <li>Throught your CLI, run "composer install" to get the needed dependances</li>
     <li>Create a database named : snowtricks</li>
-    <li>Execute the sql file included with the project file </li>
+    <li>Back throught your CLI, run "php bin/console make:migration"</li>
+    <li>Once the migration is generated, run "php bin/console d:m:m" to buil your database according to the entities schemes</li>
+    <li>Execute the sql file included with the project file to populate the database</li>
     <li>To make the mailer work, register for free in MailTrap. An app that will capture our mail but work like a mailbox, allowing the test of mailer related action within the app </li>
     <li>Setup your email address in .env with the correct parameter name : MAIL_ADMIN=your_address</li>
     <li>You can create a user account through the App interface.</li>

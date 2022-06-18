@@ -25,7 +25,7 @@ class MediaController extends AbstractController
     }
 
     /**
-     * @Route("/manage_media", name="manage_media")
+     * @Route("/admin/manage_media", name="manage_media")
      */
     public function manageMediaAction(): Response {
         $em = $this->getDoctrine()->getManager();
@@ -40,7 +40,7 @@ class MediaController extends AbstractController
     }
 
     /**
-     * @Route("/create_video", name="create_video")
+     * @Route("/admin/create_video", name="create_video")
      */
     public function createVideoAction(Request $request): Response {
         $media = new Media();
@@ -90,7 +90,7 @@ class MediaController extends AbstractController
     }
 
     /**
-     * @Route("/create_image", name="create_image")
+     * @Route("/admin/create_image", name="create_image")
      */
     public function createImageAction(Request $request): Response {
         $media = new Media();
@@ -148,7 +148,7 @@ class MediaController extends AbstractController
     }
 
     /**
-        * @Route("/update_media/{id}", name="update_media")
+        * @Route("/admin/update_media/{id}", name="update_media")
         */
     public function updateMediaAction(Request $request, Media $media): Response {
 
@@ -195,7 +195,7 @@ class MediaController extends AbstractController
     }
 
     /**
-        * @Route("/delete_media/{id}", name="delete_media")
+        * @Route("/admin/delete_media/{id}", name="delete_media")
         */
     public function deleteMediaAction(Media $media): Response {
 

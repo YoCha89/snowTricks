@@ -46,6 +46,7 @@ class SecurityController extends AbstractController
         $fullName = $request->get('fullName');
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(Account::class)->findOneBy(array('fullName' => $fullName));
+        
         $user->setIsVerified(true);
 
         $em->persist($user);
@@ -66,7 +67,7 @@ class SecurityController extends AbstractController
     public function newPassAction(Request $request, MailerInterface $mailer) {
 
         $form = $this->createFormBuilder()
-            ->add('fullName')
+            ->add('email')
             ->getForm();
 
         $form->handleRequest($request);
@@ -74,13 +75,13 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $fullName = $form->get('fullName')->getData();
-            $user = $em->getRepository(Account::class)->findOneBy(array('fullName'=>$fullName));
+            $email = $form->get('email')->getData();
+            $user = $em->getRepository(Account::class)->findOneBy(array('email'=>$email));
 
             if($user != null){
                 $email = $user->getEmail();
 
-                $this->newPassEmail($mailer, $email, $fullName);
+                $this->newPassEmail($mailer, $email, $email);
                 $this->addFlash('success', 'Un lien pour réinitialiser votre mot de passe vous a été envoyé sur l\'adresse mail de votre compte');
                 return $this->redirectToRoute('index');
             }else{
@@ -103,7 +104,7 @@ class SecurityController extends AbstractController
     public function resetPass(Request $request, UserPasswordHasherInterface $userPasswordHasher){
 
         $form = $this->createFormBuilder()
-            ->add('fullName')
+            ->add('email')
             ->add('plainPassword1', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
@@ -145,12 +146,12 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $fullName = $form->get('fullName')->getData();
+            $email = $form->get('email')->getData();
             $plainPassword1 = $form->get('plainPassword1')->getData();
             $plainPassword2 = $form->get('plainPassword2')->getData();
 
             if($plainPassword2 == $plainPassword1){
-                $user = $em->getRepository(Account::class)->findOneBy(array('fullName'=>$fullName));
+                $user = $em->getRepository(Account::class)->findOneBy(array('email'=>$email));
 
                 if($user != null){
                     $user->setPassword(

@@ -46,29 +46,39 @@ class CommentController extends AbstractController
    /**
      * @Route("/delete_comment/{id}", name="delete_comment")
      */
-    public function deleteCommentAction(Comment $comment): Response
+    public function deleteCommentAction(Request $request, Comment $comment): Response
     {   
         $em = $this->getDoctrine()->getManager();
-        $slug = $comment->getTrick()->getSlug();
 
-        $lvl = $comment->getLvl();
-        $comments = $comment->getComments();
-        $tabComments = [];
-        $tabComments[$lvl] = array($comment);
+        if($request->get('checkDone') != null){
+            $slug = $comment->getTrick()->getSlug();
 
-        if(count($comments) != 0){
-            $tabComments = $this->prepareDeletionComments($comments, $lvl, $tabComments);
+            $lvl = $comment->getLvl();
+            $comments = $comment->getComments();
+            $tabComments = [];
+            $tabComments[$lvl] = array($comment);
+
+            if(count($comments) != 0){
+                $tabComments = $this->prepareDeletionComments($comments, $lvl, $tabComments);
+            }else{
+                $tabComments[$lvl] = $comment;
+            }
+
+            foreach($tabComments as $tab){
+                $em->remove($tab);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('show_trick', ['slug' => $slug]);            
         }else{
-            $tabComments[$lvl] = $comment;
+            $title = 'Confirmation de suppression';
+            return $this->render('comment/deletion_check.html.twig', [
+                'comment' => $comment,
+                'title' => $title
+            ]);  
         }
 
-        foreach($tabComments as $tab){
-            $em->remove($tab);
-        }
-
-        $em->flush();
-
-        return $this->redirectToRoute('show_trick', ['slug' => $slug]);
     }
 
     

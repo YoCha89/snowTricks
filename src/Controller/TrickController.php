@@ -33,6 +33,10 @@ class TrickController extends AbstractController
         
         $totalPage = ceil(count($tricks)/20);
 
+        if($totalPage<=0){
+            $totalPage = 1;
+        }
+
         if(null != $request->get('page')){
             $oldPage = $request->get('page');
 
@@ -62,7 +66,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/create_trick", name="create_trick")
+     * @Route("/admin/create_trick", name="create_trick")
      */
     public function createTrickAction(Request $request, SluggerInterface $slugger, TrickRepository $trickRepository): Response {
         $trick = new Trick();
@@ -125,7 +129,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/update_trick/{slug}", name="update_trick")
+     * @Route("/admin/update_trick/{slug}", name="update_trick")
      */
     public function updateTrickAction(Request $request, Trick $trick, SluggerInterface $slugger, TrickRepository $trickRepository): Response {
 
@@ -179,7 +183,11 @@ class TrickController extends AbstractController
         }
 
         $totalPageMed = floor(count($medias)/5);
-        
+
+        if($totalPageMed<=0){
+            $totalPageMed = 1;
+        }
+
         if(null != $request->get('pageMed')){
             $oldPageMed = $request->get('pageMed');
 
@@ -233,7 +241,11 @@ class TrickController extends AbstractController
         if($reply == false){
             $comments = $commentRepository->findByOrder($trick->getId());
 
-            $totalPage = count($comments)/10;
+            $totalPage = floor(count($comments)/10);
+
+            if($totalPage<=0){
+                $totalPage = 1;
+            }
 
             if(null != $request->get('page')){
                 $oldPageCom = $request->get('page');
@@ -286,7 +298,7 @@ class TrickController extends AbstractController
     }
 
        /**
-     * @Route("/delete_trick/{slug}", name="delete_trick")
+     * @Route("/admin/delete_trick/{slug}", name="delete_trick")
      */
     public function deleteTrickAction(Request $request, Trick $trick): Response{
         $em = $this->getDoctrine()->getManager();
