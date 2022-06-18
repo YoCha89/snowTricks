@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryController extends AbstractController
 {
     /**
-     * @Route("/create_category", name="create_category", methods={"GET", "POST"})
+     * @Route("/admin/create_category", name="create_category", methods={"GET", "POST"})
      */
     public function create_category(Request $request, EntityManagerInterface $entityManager): Response {
         $category = new Category();
@@ -71,7 +71,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="category_delete", methods={"POST"})
+     * @Route("/admin/{id}", name="category_delete", methods={"POST"})
      */
     public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
